@@ -24,4 +24,4 @@ Base de données : lors de la définition de la constante `sequelize` (par défa
 
 - Créer au moins un utilisateur et un message en quarantaine associé à cet utilisateur dans la base MariaDB
 - Faire une requête GET sur `http://localhost:8000/api/emails`
-- Faire une autre requête sur `http://localhost:8000/api/emails/$EMAIL` avec $EMAIL l'email du message créé
+- Faire une autre requête sur `http://localhost:8000/api/emails/$EMAIL` avec $EMAIL l'email de l'utilisateur créé
