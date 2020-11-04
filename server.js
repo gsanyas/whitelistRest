@@ -3,6 +3,9 @@ const mariadb = require('mariadb');
 const express = require('express');
 const { Sequelize, DataTypes } = require('sequelize');
 
+// Config
+const port =  8000;
+
 //Database connexion
 const sequelize = new Sequelize('whitelist', 'root', '', { // database, username, password
     host: 'localhost',
@@ -91,7 +94,7 @@ sequelize.sync({ alter: true });
 const app = express()
 
 // listen to incoming requests on port 8000
-app.listen(8000, () => {
+app.listen(port, () => {
     console.log('Server started !')
 })
 
