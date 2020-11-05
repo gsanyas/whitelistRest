@@ -1,101 +1,10 @@
 // Imports
-const mariadb = require('mariadb');
 const express = require('express');
-const { Sequelize, DataTypes } = require('sequelize');
+var cors = require('cors')
+const {User,Quarantine} = require('./Model')
 
 // Config
 const port =  8000;
-var cors = require('cors')
-
-//Database connexion
-const sequelize = new Sequelize('whitelist', 'root', '', { // database, username, password
-    host: 'localhost',
-    dialect: 'mariadb'
-}) //sequelize is an instance of connexion, while Sequelize is the whole library
-
-try {
-    sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-} catch (error) {
-    console.error('Unable to connect to the database:', error);
-}
-
-// Models 
-
-const User = sequelize.define( "user",
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true
-        },
-        full_name: {
-            type: DataTypes.STRING(120)
-        },
-        email: {
-            type: DataTypes.STRING(120),
-            index: true,
-            unique: true
-        },
-        email_password: {
-            type: DataTypes.STRING
-        },
-        password: {
-            type: DataTypes.STRING
-        },
-        last_uid_scanned: {
-            type: DataTypes.INTEGER,
-            defaultValue: 1
-        },
-    },{
-        freezeTableName: true,
-        timestamps: false
-    }
-)
-
-const Quarantine = sequelize.define("quarantine",
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true
-        },
-        fk_user: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: User,
-                key: 'id'
-            }
-        },
-        email_sender: {
-            type: DataTypes.STRING(120)
-        },
-        email_subject: {
-            type: DataTypes.STRING(120)
-        },
-        email_size: {
-            type: DataTypes.INTEGER
-        },
-        email_id: {
-            type: DataTypes.STRING(120)
-        },
-        created_at: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
-        }
-    },{
-        freezeTableName: true,
-        timestamps: false,
-    }
-)
-Quarantine.belongsTo(User, {
-    onDelete: 'RESTRICT',
-    foreignKey: {
-        fieldName: 'fk_user',
-    },
-    targetKey: 'id'
-});
-
-sequelize.sync();
-
 
 // Express routing
 const app = express()
