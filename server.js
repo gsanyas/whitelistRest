@@ -88,7 +88,7 @@ Quarantine.belongsTo(User, {
     targetKey: 'id'
 });
 
-sequelize.sync({ alter: true });
+sequelize.sync();
 
 
 // Express routing
