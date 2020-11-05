@@ -46,7 +46,10 @@ const User = sequelize.define( "user",
             type: DataTypes.INTEGER,
             defaultValue: 1
         },
-    },{freezeTableName: true}
+    },{
+        freezeTableName: true,
+        timestamps: false
+    }
 )
 
 const Quarantine = sequelize.define("quarantine",
@@ -78,7 +81,10 @@ const Quarantine = sequelize.define("quarantine",
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
         }
-    },{freezeTableName: true}
+    },{
+        freezeTableName: true,
+        timestamps: false,
+    }
 )
 Quarantine.belongsTo(User, {
     onDelete: 'RESTRICT',
