@@ -5,6 +5,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 // Config
 const port =  8000;
+var cors = require('cors')
 
 //Database connexion
 const sequelize = new Sequelize('whitelist', 'root', '', { // database, username, password
@@ -45,7 +46,7 @@ const User = sequelize.define( "user",
             type: DataTypes.INTEGER,
             defaultValue: 1
         },
-    },{}
+    },{freezeTableName: true}
 )
 
 const Quarantine = sequelize.define("quarantine",
@@ -77,7 +78,7 @@ const Quarantine = sequelize.define("quarantine",
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
         }
-    },{}
+    },{freezeTableName: true}
 )
 Quarantine.belongsTo(User, {
     onDelete: 'RESTRICT',
@@ -92,6 +93,8 @@ sequelize.sync({ alter: true });
 
 // Express routing
 const app = express()
+
+app.use(cors())
 
 // listen to incoming requests on port 8000
 app.listen(port, () => {
