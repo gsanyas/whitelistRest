@@ -30,7 +30,7 @@ const User = sequelize.define( "user",
         },
         last_uid_scanned: {
             type: DataTypes.INTEGER,
-            defaultValue: 1
+            defaultValue: 0
         },
         created_at: {
             type: DataTypes.DATE,
