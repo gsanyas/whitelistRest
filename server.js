@@ -49,7 +49,17 @@ app.post('/login', async (req,res) => {
     }
 })
 
-app.get('/api/emails', checkToken, async (_req, res) => {
+app.get('/api/emails', checkToken, async (req, res) => {
+    const userId = req.user //recovered from cookies
+    const quarantines = await Quarantine.findAll({
+        where: { fk_user: userId }
+    })
+    res.send(quarantines)
+})
+
+// Old routes (to remove)
+
+app.get('/api/emails/all', async (_req, res) => {
     const quarantines = await Quarantine.findAll({
         include: [{
             model: User
