@@ -1,15 +1,26 @@
 // Imports
-const express = require('express');
-var cors = require('cors')
+const express = require('express')
+const cors = require('cors')
+const fs = require('fs')
+const jwt = require('jsonwebtoken')
 const {User,Quarantine} = require('./Model')
+const {checkToken} = require('./auth')
 
 // Config
 const port =  8000;
+
+const cookieConfig = {
+    httpOnly: true, // to disable accessing cookie via client side js (there is no client side on this API though)
+    //secure: true, // to force https (if you use it)
+    maxAge: 1000000, // ttl in seconds (remove this option and cookie will die when browser is closed)
+    signed: false //the token is already signed
+};
 
 // Express routing
 const app = express()
 
 app.use(cors())
+app.use(express.json())
 
 // listen to incoming requests on port 8000
 app.listen(port, () => {
@@ -18,7 +29,27 @@ app.listen(port, () => {
 
 /* Routes */
 
-app.route('/api/emails').get(async (_req, res) => {
+app.post('/login', async (req,res) => {
+    const email = req.body.email
+    const password = req.body.password
+    const user = await User.findOne( {where: { email: email }} )
+    if (user === null){
+        res.send("Error : user don't exist");
+    }
+    else {
+        if (password === user["password"]) {
+            const privateKey = fs.readFileSync('./private.pem', 'utf8');
+            const token = jwt.sign({ "id": user["id"] }, privateKey , { algorithm: 'HS256'});
+            res.cookie('authcookie', token, cookieConfig);
+            res.send('set cookie');
+        }
+        else {
+            res.send("Error : invalid password");
+        }
+    }
+})
+
+app.get('/api/emails', checkToken, async (_req, res) => {
     const quarantines = await Quarantine.findAll({
         include: [{
             model: User
@@ -28,7 +59,7 @@ app.route('/api/emails').get(async (_req, res) => {
     // console.log(JSON.stringify(quarantines))
     res.send(quarantines)
 })
-app.route('/api/emails/:address').get(async (req, res) => {
+app.get('/api/emails/:address',async (req, res) => {
     const requestedEmail = req.params['address']
     const quarantines = await Quarantine.findAll({
         include:  [{
