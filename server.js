@@ -3,6 +3,8 @@ const express = require('express')
 const cors = require('cors')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser');
+
 const {User,Quarantine} = require('./Model')
 const {checkToken} = require('./auth')
 
@@ -19,7 +21,8 @@ const cookieConfig = {
 // Express routing
 const app = express()
 
-app.use(cors())
+app.use(cors({credentials: true,origin: 'http://localhost:4200'}))
+app.use(cookieParser())
 app.use(express.json())
 
 // listen to incoming requests on port 8000
@@ -41,7 +44,8 @@ app.post('/login', async (req,res) => {
             const privateKey = fs.readFileSync('./private.pem', 'utf8');
             const token = jwt.sign({ "id": user["id"] }, privateKey , { algorithm: 'HS256'});
             res.cookie('authcookie', token, cookieConfig);
-            res.send('set cookie');
+            console.log("set cookie");
+            res.send({setCookie: true});
         }
         else {
             res.send("Error : invalid password");
@@ -51,6 +55,7 @@ app.post('/login', async (req,res) => {
 
 app.get('/api/emails', checkToken, async (req, res) => {
     const userId = req.user //recovered from cookies
+    console.log(userId)
     const quarantines = await Quarantine.findAll({
         where: { fk_user: userId }
     })
