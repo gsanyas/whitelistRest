@@ -10,7 +10,6 @@ exports.checkToken = (req, res, next) => {
             res.sendStatus(403)
         } 
         else if(data.id){
-            console.log("ok: "+ data.id)
             req.user = data.id
             next()
         }
