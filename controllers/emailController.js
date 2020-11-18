@@ -4,7 +4,7 @@ exports.emailController = async (req, res) => {
     const userId = req.user // recovered from cookies
     console.log(userId)
     const quarantines = await Quarantine.findAll({
-        where: { id: userId }
+        where: { fk_user: userId }
     })
     res.send(quarantines)
 }
