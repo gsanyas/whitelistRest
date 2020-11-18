@@ -2,6 +2,8 @@
 
 ## Requirement
 
+npm
+
 Serveur MariaDB
 
 ## Getting started
@@ -10,18 +12,30 @@ Serveur MariaDB
 
 ```npm install```
 
+### Création de la clé dans la racine du projet
+
+Un fichier `private.pem` contenant un secret doit se trouver dans la racine du projet.
+
+Pour en créer un, par exemple :
+
+```text
+> ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (.../.ssh/id_rsa) : private.pem
+```
+
 ### Configuration
 
-Port d'accès au serveur : constante `port` (valeur par défaut: 8000)
+Port d'accès au serveur : constante `port` (valeur par défaut: 8000) dans ./server.js
 
-Base de données : lors de la définition de la constante `sequelize` (par défault sur 'localhost')
+Adresse du Front-end : constante `origin` dans ./server.js
+
+Base de données : dans ./Model.js
 
 ### Lancement du serveur
 
 `npm start`
 
-### Test du serveur
+### Utilisation
 
-- Créer au moins un utilisateur et un message en quarantaine associé à cet utilisateur dans la base MariaDB
-- Faire une requête GET sur `http://localhost:8000/api/emails`
-- Faire une autre requête sur `http://localhost:8000/api/emails/$EMAIL` avec $EMAIL l'email de l'utilisateur créé
+Endpoints définis dans ./server.js

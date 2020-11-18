@@ -5,14 +5,16 @@ const cookieParser = require('cookie-parser');
 const { checkToken } = require('./utils/checktoken');
 const { loginController } = require('./controllers/loginController');
 const { emailController } = require('./controllers/emailController');
+const { userController } = require('./controllers/userController');
 
 // Config
 const port = 8000;
+const origin = 'http://localhost:4200';
 
 // Express routing
 const app = express()
 
-app.use(cors({ credentials: true, origin: 'http://localhost:4200' }))
+app.use(cors({ credentials: true, origin: origin }))
 app.use(cookieParser())
 app.use(express.json())
 
@@ -25,3 +27,4 @@ app.listen(port, () => {
 
 app.post('/login', loginController);
 app.get('/api/emails', checkToken, emailController);
+app.get('/api/user', checkToken, userController);
