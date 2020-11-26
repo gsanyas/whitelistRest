@@ -8,7 +8,7 @@ const { emailController } = require('./controllers/emailController');
 const { userController } = require('./controllers/userController');
 
 // Config
-const port = 8000;
+const port = 8070;
 const origin = 'http://localhost:8080';
 
 // Express routing
