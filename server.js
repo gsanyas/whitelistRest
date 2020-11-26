@@ -9,7 +9,7 @@ const { userController } = require('./controllers/userController');
 
 // Config
 const port = 8000;
-const origin = 'http://localhost:4200';
+const origin = 'http://localhost:8080';
 
 // Express routing
 const app = express()

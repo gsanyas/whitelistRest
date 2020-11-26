@@ -3,7 +3,7 @@ const fs = require('fs')
 const jwt = require('jsonwebtoken')
 
 const cookieConfig = {
-    httpOnly: true, // to disable accessing cookie via client side js (there is no client side on this API though)
+    httpOnly: false, // set true in final version, without the proxy
     //secure: true, // to force https (if you use it)
     maxAge: 1000000, // ttl in seconds (remove this option and cookie will die when browser is closed)
     signed: false //the token is already signed

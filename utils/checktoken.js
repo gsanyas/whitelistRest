@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 exports.checkToken = (req, res, next) => {
     const private = fs.readFileSync('./private.pem', 'utf8');
-    console.log(JSON.stringify(req.cookies))
     const authcookie = req.cookies.authcookie
     jwt.verify(authcookie,private,(err,data)=>{
         if(err){
