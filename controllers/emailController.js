@@ -19,7 +19,7 @@ exports.getEmail = async (req, res) => {
     const userId = req.user // recovered from cookies
     console.log(userId)
     const quarantines = await Quarantine.findAll({
-        where: { fk_user: userId }
+        where: { fk_user: userId,  to_eliminate: false}
     })
     res.send(quarantines)
 }
@@ -27,7 +27,7 @@ exports.getEmail = async (req, res) => {
 exports.deleteEmail = async (req, res) => {
     const email = req.email
     try {
-        await Quarantine.destroy({
+        await Quarantine.update({to_eliminate: true},{
             where: email
         })
         res.status(204).send("Email deleted")

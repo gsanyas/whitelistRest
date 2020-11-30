@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 const { sequelize } = require("./sequelize");
+const { User } = require('./user')
 
 const Quarantine = sequelize.define("quarantine",
     {
@@ -21,6 +22,10 @@ const Quarantine = sequelize.define("quarantine",
         },
         email_id: {
             type: DataTypes.STRING(120)
+        },
+        to_eliminate: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
         },
         to_restore: {
             type: DataTypes.BOOLEAN,
