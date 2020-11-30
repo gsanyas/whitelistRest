@@ -1,6 +1,6 @@
-const {User} = require('../Model')
+const {User} = require('../models/user')
 
-exports.userController = async (req, res) => {
+exports.getUser = async (req, res) => {
     const userId = req.user // recovered from cookies
     console.log(userId)
     const user = await User.findOne({

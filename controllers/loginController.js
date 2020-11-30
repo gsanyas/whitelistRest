@@ -1,4 +1,4 @@
-const {User} = require('../Model')
+const {User} = require('../models/user')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
 
@@ -28,3 +28,7 @@ exports.loginController = async (req,res) => {
         }
     }
 };
+
+exports.isConnected = async (_req,res) => {
+    res.status(200).send({connected: true})
+}

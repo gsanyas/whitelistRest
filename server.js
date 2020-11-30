@@ -3,9 +3,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const { checkToken } = require('./utils/checktoken');
-const { loginController } = require('./controllers/loginController');
-const { emailController } = require('./controllers/emailController');
-const { userController } = require('./controllers/userController');
+const { loginController, isConnected } = require('./controllers/loginController');
+const { getEmail, checkEmail, deleteEmail } = require('./controllers/emailController');
+const { getUser } = require('./controllers/userController');
 
 // Config
 const port = 8070;
@@ -26,5 +26,7 @@ app.listen(port, () => {
 /* Routes */
 
 app.post('/login', loginController);
-app.get('/api/emails', checkToken, emailController);
-app.get('/api/user', checkToken, userController);
+app.get('/connect', checkToken, isConnected);
+app.get('/api/emails', checkToken, getEmail);
+app.get('/api/user', checkToken, getUser);
+app.delete('/api/email', checkToken, checkEmail, deleteEmail);
