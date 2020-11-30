@@ -1,3 +1,4 @@
+const { DataTypes } = require("sequelize/types");
 const { sequelize } = require("./sequelize");
 
 const Quarantine = sequelize.define("quarantine",
@@ -20,6 +21,14 @@ const Quarantine = sequelize.define("quarantine",
         },
         email_id: {
             type: DataTypes.STRING(120)
+        },
+        to_restore: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
+        was_restored: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
         },
         created_at: {
             type: DataTypes.DATE,

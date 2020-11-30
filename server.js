@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 
 const { checkToken } = require('./utils/checktoken');
 const { loginController, isConnected } = require('./controllers/loginController');
-const { getEmail, checkEmail, deleteEmail } = require('./controllers/emailController');
+const { getEmail, checkEmail, deleteEmail, restoreEmail } = require('./controllers/emailController');
 const { getUser } = require('./controllers/userController');
 
 // Config
@@ -29,4 +29,5 @@ app.post('/login', loginController);
 app.get('/connect', checkToken, isConnected);
 app.get('/api/emails', checkToken, getEmail);
 app.get('/api/user', checkToken, getUser);
-app.delete('/api/email', checkToken, checkEmail, deleteEmail);
+app.delete('/api/emails', checkToken, checkEmail, deleteEmail);
+app.put('/api/emails/restore', checkToken, checkEmail, restoreEmail)

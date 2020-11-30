@@ -26,9 +26,26 @@ exports.getEmail = async (req, res) => {
 
 exports.deleteEmail = async (req, res) => {
     const email = req.email
-    Quarantine.destroy({
-        where: email
-    })
-    .then(() => res.status(204).send("Email deleted"))
-    .catch(_err => res.status(502).send("Error while deleting the email."))
+    try {
+        await Quarantine.destroy({
+            where: email
+        })
+        res.status(204).send("Email deleted")
+    }
+    catch(_err) {
+        res.status(502).send("Error while deleting the email.")
+    }
+}
+
+exports.restoreEmail = async (req,res) => {
+    const email = req.email
+    try {
+        await Quarantine.update({to_restore: true},{
+            where: email
+        })
+        res.status(201).send("Set email to be restored")
+    }
+    catch(_err) {
+        res.status(502).send("Error while modifying the email")
+    }
 }
