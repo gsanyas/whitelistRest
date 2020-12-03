@@ -24,6 +24,14 @@ Generating public/private rsa key pair.
 Enter file in which to save the key (.../.ssh/id_rsa) : private.pem
 ```
 
+### Définition des variables d'environnement
+
+Créer un fichier appelé `.env` avec toutes les variables d'environnement nécessaires. Par exemple:
+
+```text
+RECAPTCHA_TOKEN=<clé secrète de recaptcha>
+```
+
 ### Configuration
 
 Port d'accès au serveur : constante `port` (valeur par défaut: 8000) dans ./server.js
