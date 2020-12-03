@@ -11,7 +11,7 @@ const { verifyEmail } = require('./controllers/captchaController');
 
 // Config
 const port = 8070;
-const origin = 'http://localhost:4200';
+const origin = 'http://localhost:8080';
 
 // Express routing
 const app = express()
