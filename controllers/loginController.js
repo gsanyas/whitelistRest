@@ -21,10 +21,10 @@ exports.loginController = async (req,res) => {
             const privateKey = fs.readFileSync('./private.pem', 'utf8');
             const token = jwt.sign({ "id": user["id"] }, privateKey , { algorithm: 'HS256'});
             res.cookie('authcookie', token, cookieConfig);
-            res.send({setCookie: true});
+            res.status(200).send({setCookie: true});
         }
         else {
-            res.send("Error : invalid password");
+            res.status(403).send("Error : invalid password");
         }
     }
 };

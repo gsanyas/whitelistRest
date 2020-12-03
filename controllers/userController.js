@@ -10,5 +10,5 @@ exports.getUser = async (req, res) => {
         full_name: user.full_name,
         email: user.email
     }
-    res.send(sendUser)
+    res.status(200).send(sendUser)
 }
