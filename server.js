@@ -8,6 +8,7 @@ const { loginController, isConnected } = require('./controllers/loginController'
 const { getEmail, checkEmail, deleteEmail, restoreEmail } = require('./controllers/emailController');
 const { getUser } = require('./controllers/userController');
 const { verifyEmail } = require('./controllers/captchaController');
+const model = require('./model-routes.json');
 
 // Config
 const port = 8070;
@@ -27,9 +28,11 @@ app.listen(port, () => {
 })
 
 /* Routes */
+/* See model-routes.json file for more details about each route */
 
+app.get('/help', (_req,res) => res.status(200).json(model))
 app.post('/login', loginController);
-app.get('/connect', checkToken, isConnected);
+app.get('/api/connect', checkToken, isConnected);
 app.get('/api/emails', checkToken, getEmail);
 app.get('/api/user', checkToken, getUser);
 app.delete('/api/emails', checkToken, checkEmail, deleteEmail);

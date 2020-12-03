@@ -1,0 +1,131 @@
+{
+    "routes": [
+        {
+            "path":"/help",
+            "request":"GET",
+            "description":"obtain this information",
+            "token-required":false,
+            "response":[
+                {
+                    "status":200,
+                    "response-type":"JSON"
+                }
+            ]
+        },
+        {
+            "path": "/login",
+            "request": "POST",
+            "description": "connect one user to the backend",
+            "body-description": "{email: $email, password: $password}",
+            "token-required": false,
+            "response": [
+                {
+                    "status": 200,
+                    "response-type": "JSON"
+                },
+                {
+                    "status": 403,
+                    "response-type": "Text"
+                }
+            ]
+        },
+        {
+            "path": "/api/connect",
+            "request": "GET",
+            "description": "returns status 200 only if the client bears a valid token",
+            "token-required": true,
+            "response": [
+                {
+                    "status": 200,
+                    "response-type": "JSON"
+                },
+                {
+                    "status": 403,
+                    "response-type": "Text"
+                }
+            ]
+        },
+        {
+            "path": "/api/emails",
+            "request": "GET",
+            "description": "obtain all the emails in quarantine of the connected user",
+            "token-required": true,
+            "response": [
+                {
+                    "status": 200,
+                    "response-type": "JSON"
+                },
+                {
+                    "status":403,
+                    "response-type": "Text"
+                }
+            ]
+        },
+        {
+            "path":"/api/emails",
+            "request": "DELETE",
+            "description": "delete one email in quarantine",
+            "body-description": "{email: $email}",
+            "token-required": true,
+            "response": [
+                {
+                    "status": 204,
+                    "response-type":"Text"
+                },
+                {
+                    "status":403,
+                    "response-type":"Text"
+                },
+                {
+                    "status":404,
+                    "response-type":"Text"
+                },
+                {
+                    "status":502,
+                    "response-type": "Text"
+                }
+            ]
+        },
+        {
+            "path": "/api/user",
+            "request": "GET",
+            "description": "obtain the name and the email adress of the connected user",
+            "token-required":true,
+            "response": [
+                {
+                    "status":200,
+                    "response-type": "JSON"
+                },
+                {
+                    "status":403,
+                    "response-type":"Text"
+                }
+            ]
+        },
+        {
+            "path": "/api/emails/restore",
+            "request": "PUT",
+            "description": "changes the status of one email in quarantine so that it will be restored to the user mailbox",
+            "body-description":"{email: $email}",
+            "token-required":false,
+            "response":[
+                {
+                    "status":201,
+                    "response-type":"Text"
+                },
+                {
+                    "status":403,
+                    "response-type":"Text"
+                },
+                {
+                    "status":404,
+                    "response-type":"Text"
+                },
+                {
+                    "status":502,
+                    "response-type":"Text"
+                }
+            ]
+        }
+    ]
+}
