@@ -6,7 +6,8 @@ const WhiteList = sequelize.define("white_list",
     {
         id: {
             type: DataTypes.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         email: {
             type: DataTypes.STRING(120)

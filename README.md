@@ -34,11 +34,7 @@ RECAPTCHA_TOKEN=<clé secrète de recaptcha>
 
 ### Configuration
 
-Port d'accès au serveur : constante `port` (valeur par défaut: 8000) dans ./server.js
-
-Adresse du Front-end : constante `origin` dans ./server.js
-
-Base de données : dans ./Model.js
+Voir fichier `config.json`
 
 ### Lancement du serveur
 

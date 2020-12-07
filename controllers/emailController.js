@@ -1,4 +1,5 @@
 const {Quarantine} = require('../models/quarantine')
+const { WhiteList } = require('../models/whitelist')
 
 exports.checkEmail = async (req,res,next) => {
     const emailId = req.body.email
@@ -47,5 +48,28 @@ exports.restoreEmail = async (req,res) => {
     }
     catch(_err) {
         res.status(502).send("Error while modifying the email")
+    }
+}
+
+exports.putInWhiteList = async(req,res) => {
+    const email = req.email
+    try {
+        const mailInQuarantine = await WhiteList.findOne({
+            where: {
+                email: email.email_sender,
+                fk_user: email.fk_user
+            }
+        })
+        if (mailInQuarantine != null) res.status(304).send("Sender already in whitelist.")
+        else {
+            await WhiteList.create({
+                email: email.email_sender,
+                fk_user: email.fk_user
+            })
+            res.status(201).send("Added sender to whitelist.")
+        }
+    }
+    catch(err) {
+        res.status(502).send("Error while adding the sender to whitelist : " + err)
     }
 }
