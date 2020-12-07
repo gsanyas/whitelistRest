@@ -8,13 +8,11 @@ const {User} = require('../models/user')
 
 // TODO (possible): check the connection with the IMAP server (before the register in another endpoint)
 exports.register = async (req, res) => {
-    // TODO: add all the register logic
     const email = req.body.email;
     const fullName = req.body.full_name;
     const password = req.body.password;
 
     // encryption logic
-    // TODO: get the other data
     const publicKey = process.env.PUBLIC_KEY_PATH;
     const emailPassword = crypto.publicEncrypt({
             key: fs.readFileSync(publicKey, 'utf8'),
