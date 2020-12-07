@@ -66,10 +66,19 @@ exports.putInWhiteList = async(req,res) => {
                 email: email.email_sender,
                 fk_user: email.fk_user
             })
+            await Quarantine.update({to_restore},{
+                where: {
+                    fk_user: email.fk_user,
+                    email_sender: email.email_sender,
+                    to_eliminate: false,
+                    was_restored: false
+                }
+            })
+            // TODO : add http request to backend
             res.status(201).send("Added sender to whitelist.")
         }
     }
     catch(err) {
-        res.status(502).send("Error while adding the sender to whitelist : " + err)
+        res.status(502).send(err)
     }
 }
