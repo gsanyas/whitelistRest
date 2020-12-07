@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 
 const { checkToken } = require('./utils/checktoken');
 const { loginController, isConnected } = require('./controllers/loginController');
-const { getEmail, checkEmail, deleteEmail, restoreEmail } = require('./controllers/emailController');
+const { getEmail, checkEmail, deleteEmail, restoreEmail, putInWhiteList, putInBlackList } = require('./controllers/emailController');
 const { getUser } = require('./controllers/userController');
 const { verifyEmail } = require('./controllers/captchaController');
 const model = require('./model-routes.json');
@@ -35,4 +35,6 @@ app.get('/api/emails', checkToken, getEmail);
 app.get('/api/user', checkToken, getUser);
 app.delete('/api/emails', checkToken, checkEmail, deleteEmail);
 app.put('/api/emails/restore', checkToken, checkEmail, restoreEmail)
+app.put('api/whitelist', checkToken, checkEmail, putInWhiteList);
+app.put('api/blacklist', checkToken, checkEmail, putInBlackList);
 app.put('/api/verify/:id', verifyEmail)

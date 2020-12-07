@@ -1,5 +1,6 @@
 const {Quarantine} = require('../models/quarantine')
 const { WhiteList } = require('../models/whitelist')
+const {BlackList} = require('../models/blacklist')
 
 exports.checkEmail = async (req,res,next) => {
     const emailId = req.body.email
@@ -66,7 +67,7 @@ exports.putInWhiteList = async(req,res) => {
                 email: email.email_sender,
                 fk_user: email.fk_user
             })
-            await Quarantine.update({to_restore},{
+            await Quarantine.update({to_restore: true},{
                 where: {
                     fk_user: email.fk_user,
                     email_sender: email.email_sender,
@@ -76,6 +77,38 @@ exports.putInWhiteList = async(req,res) => {
             })
             // TODO : add http request to backend
             res.status(201).send("Added sender to whitelist.")
+        }
+    }
+    catch(err) {
+        res.status(502).send(err)
+    }
+}
+
+exports.putInBlackList = async(req,res) => {
+    const email = req.email
+    try {
+        const mailInQuarantine = await BlackList.findOne({
+            where: {
+                email: email.email_sender,
+                fk_user: email.fk_user
+            }
+        })
+        if (mailInQuarantine != null) res.status(304).send("Sender already in whitelist.")
+        else {
+            await BlackList.create({
+                email: email.email_sender,
+                fk_user: email.fk_user
+            })
+            await Quarantine.update({to_eliminate: true},{
+                where: {
+                    fk_user: email.fk_user,
+                    email_sender: email.email_sender,
+                    to_restore: false,
+                    was_restored: false
+                }
+            })
+            // TODO : add http request to backend
+            res.status(201).send("Added sender to blacklist.")
         }
     }
     catch(err) {
