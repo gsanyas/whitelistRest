@@ -55,13 +55,13 @@ exports.restoreEmail = async (req,res) => {
 exports.putInWhiteList = async(req,res) => {
     const email = req.email
     try {
-        const mailInQuarantine = await WhiteList.findOne({
+        const senderInWhitelist = await WhiteList.findOne({
             where: {
                 email: email.email_sender,
                 fk_user: email.fk_user
             }
         })
-        if (mailInQuarantine != null) res.status(304).send("Sender already in whitelist.")
+        if (senderInWhitelist != null) res.status(304).send("Sender already in whitelist.")
         else {
             await WhiteList.create({
                 email: email.email_sender,
@@ -87,13 +87,13 @@ exports.putInWhiteList = async(req,res) => {
 exports.putInBlackList = async(req,res) => {
     const email = req.email
     try {
-        const mailInQuarantine = await BlackList.findOne({
+        const senderInBlacklist = await BlackList.findOne({
             where: {
                 email: email.email_sender,
                 fk_user: email.fk_user
             }
         })
-        if (mailInQuarantine != null) res.status(304).send("Sender already in whitelist.")
+        if (senderInBlacklist != null) res.status(304).send("Sender already in blacklist.")
         else {
             await BlackList.create({
                 email: email.email_sender,
