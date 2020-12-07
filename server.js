@@ -10,20 +10,18 @@ const { getUser } = require('./controllers/userController');
 const { verifyEmail } = require('./controllers/captchaController');
 const model = require('./model-routes.json');
 
-// Config
-const port = 8070;
-const origin = 'http://localhost:8080';
+const config = require("./config.json");
 
 // Express routing
 const app = express()
 
-app.use(cors({ credentials: true, origin: origin }))
+app.use(cors({ credentials: true, origin: config.origin }))
 app.use(cookieParser())
 app.use(express.json())
 
 
 // listen to incoming requests on port 8000
-app.listen(port, () => {
+app.listen(config.port, () => {
     console.log('Server started !')
 })
 

@@ -1,10 +1,12 @@
-const { Sequelize, DataTypes } = require('sequelize');
-var exports = module.exports = {};
-// Database connexion and sync
+const { Sequelize } = require('sequelize');
+const config = require("../config.json").database;
 
-const sequelize = new Sequelize('whitelist', 'root', '', { // database, username, password
-    host: 'localhost',
-    dialect: 'mariadb'
+var exports = module.exports = {};
+
+// Database connexion and sync
+const sequelize = new Sequelize(config.name, config.username, config.password, {
+    host: config.host,
+    dialect: config.dialect
 }) //sequelize is an instance of connexion, while Sequelize is the whole library
 exports.sequelize = sequelize;
 
