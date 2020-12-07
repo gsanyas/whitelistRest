@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require("./sequelize");
 const { User } = require('./user')
 
-const BlackList = sequelize.define("white_list",
+const BlackList = sequelize.define("black_list",
     {
         id: {
             type: DataTypes.INTEGER,
