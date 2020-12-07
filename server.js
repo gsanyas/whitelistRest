@@ -3,9 +3,10 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 
-const { checkToken } = require('./utils/checktoken');
+const { checkToken } = require('./filters/checktoken');
+const { checkEmail } = require('./filters/checkEmail');
 const { loginController, isConnected } = require('./controllers/loginController');
-const { getEmail, checkEmail, deleteEmail, restoreEmail, putInWhiteList, putInBlackList } = require('./controllers/emailController');
+const { getEmail, deleteEmail, restoreEmail, putInWhiteList, putInBlackList } = require('./controllers/emailController');
 const { getUser } = require('./controllers/userController');
 const { verifyEmail } = require('./controllers/captchaController');
 const model = require('./model-routes.json');
