@@ -15,7 +15,9 @@ exports.deleteEmail = async (req, res) => {
     const email = req.email
     try {
         await Quarantine.update({to_eliminate: true},{
-            where: email
+            where: {
+                id: email.id
+            }
         })
         res.status(204).send("Email deleted")
     }
@@ -28,7 +30,9 @@ exports.restoreEmail = async (req,res) => {
     const email = req.email
     try {
         await Quarantine.update({to_restore: true},{
-            where: email
+            where: {
+                id: email.id
+            }
         })
         res.status(201).send("Set email to be restored")
     }
