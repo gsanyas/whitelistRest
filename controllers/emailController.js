@@ -6,7 +6,7 @@ exports.getEmail = async (req, res) => {
     const userId = req.user // recovered from cookies
     console.log(userId)
     const quarantines = await Quarantine.findAll({
-        where: { fk_user: userId,  to_eliminate: false}
+        where: { fk_user: userId,  to_eliminate: false, to_restore: false}
     })
     res.send(quarantines)
 }
