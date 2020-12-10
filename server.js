@@ -36,6 +36,6 @@ app.get('/api/emails', checkToken, getEmail);
 app.get('/api/user', checkToken, getUser);
 app.delete('/api/emails/:id', checkToken, checkEmail, deleteEmail);
 app.put('/api/emails/restore/:id', checkToken, checkEmail, restoreEmail)
-app.put('api/whitelist/:id', checkToken, checkEmail, putInWhiteList);
-app.put('api/blacklist/:id', checkToken, checkEmail, putInBlackList);
+app.put('/api/whitelist/:id', checkToken, checkEmail, putInWhiteList);
+app.put('/api/blacklist/:id', checkToken, checkEmail, putInBlackList);
 app.put('/api/verify/:id', verifyEmail)

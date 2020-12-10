@@ -69,6 +69,7 @@ exports.putInWhiteList = async(req,res) => {
         }
     }
     catch(err) {
+        console.log(JSON.stringify(err))
         res.status(502).send(err)
     }
 }
@@ -101,6 +102,7 @@ exports.putInBlackList = async(req,res) => {
         }
     }
     catch(err) {
+        console.log(JSON.stringify(err))
         res.status(502).send(err)
     }
 }
