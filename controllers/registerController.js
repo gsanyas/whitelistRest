@@ -10,7 +10,7 @@ const {User} = require('../models/user')
 exports.register = async (req, res) => {
     const email = req.body.email;
     const fullName = req.body.full_name;
-    const password = req.body.password;
+    const password = req.body.password; // TODO: hash the password
 
     // encryption logic
     const publicKey = process.env.PUBLIC_KEY_PATH;
