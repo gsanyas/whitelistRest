@@ -16,7 +16,7 @@
             "path": "/login",
             "request": "POST",
             "description": "connect one user to the backend",
-            "body-description": "{email: $email, password: $password}",
+            "body-description": "{email: text, password: text}",
             "token-required": false,
             "response": [
                 {
@@ -25,7 +25,8 @@
                 },
                 {
                     "status": 403,
-                    "response-type": "Text"
+                    "response-type": "Text",
+                    "description": "incorrect email or password"
                 }
             ]
         },
@@ -41,14 +42,15 @@
                 },
                 {
                     "status": 403,
-                    "response-type": "Text"
+                    "response-type": "Text",
+                    "description": "invalid client token"
                 }
             ]
         },
         {
             "path": "/api/emails",
             "request": "GET",
-            "description": "obtain all the emails in quarantine of the connected user",
+            "description": "obtain all the emails in quarantine of the user",
             "token-required": true,
             "response": [
                 {
@@ -57,15 +59,16 @@
                 },
                 {
                     "status":403,
-                    "response-type": "Text"
+                    "response-type": "Text",
+                    "description": "invalid client token"
                 }
             ]
         },
         {
-            "path":"/api/emails",
+            "path":"/api/emails/:id",
             "request": "DELETE",
+            "params": {"id": "number"},
             "description": "delete one email in quarantine",
-            "body-description": "{email: $email}",
             "token-required": true,
             "response": [
                 {
@@ -74,22 +77,25 @@
                 },
                 {
                     "status":403,
-                    "response-type":"Text"
+                    "response-type":"Text",
+                    "description": "invalid client token"
                 },
                 {
                     "status":404,
-                    "response-type":"Text"
+                    "response-type":"Text",
+                    "description": "email not found in quarantine"
                 },
                 {
                     "status":502,
-                    "response-type": "Text"
+                    "response-type": "Text",
+                    "description": "error in database or in backend server"
                 }
             ]
         },
         {
             "path": "/api/user",
             "request": "GET",
-            "description": "obtain the name and the email adress of the connected user",
+            "description": "obtain the name and the email adress of the user",
             "token-required":true,
             "response": [
                 {
@@ -98,15 +104,45 @@
                 },
                 {
                     "status":403,
-                    "response-type":"Text"
+                    "response-type":"Text",
+                    "description": "invalid client token"
                 }
             ]
         },
         {
-            "path": "/api/emails/restore",
+            "path": "/api/emails/restore/:id",
             "request": "PUT",
+            "params": {"id": "number"},
             "description": "changes the status of one email in quarantine so that it will be restored to the user mailbox",
             "body-description":"{email: $email}",
+            "token-required":true,
+            "response":[
+                {
+                    "status":201,
+                    "response-type":"Text"
+                },
+                {
+                    "status":403,
+                    "response-type":"Text",
+                    "description": "invalid client token"
+                },
+                {
+                    "status":404,
+                    "response-type":"Text",
+                    "description": "email not found in quarantine"
+                },
+                {
+                    "status":502,
+                    "response-type":"Text",
+                    "description": "error in database or in backend server"
+                }
+            ]
+        },
+        {
+            "path": "/api/whitelist/:id",
+            "request": "PUT",
+            "params": {"id": "number"},
+            "description": "put the address from which the email was sent in the whitelist",
             "token-required":false,
             "response":[
                 {
@@ -115,15 +151,46 @@
                 },
                 {
                     "status":403,
-                    "response-type":"Text"
+                    "response-type":"Text",
+                    "description": "invalid client token"
                 },
                 {
                     "status":404,
-                    "response-type":"Text"
+                    "response-type":"Text",
+                    "description": "email not found in quarantine"
                 },
                 {
                     "status":502,
+                    "response-type":"Text",
+                    "description": "error in database or in backend server"
+                }
+            ]
+        },
+        {
+            "path": "/api/blacklist/:id",
+            "request": "PUT",
+            "params": {"id": "number"},
+            "description": "put the address from which the email was sent in the whitelist",
+            "token-required":true,
+            "response":[
+                {
+                    "status":201,
                     "response-type":"Text"
+                },
+                {
+                    "status":403,
+                    "response-type":"Text",
+                    "description": "invalid client token"
+                },
+                {
+                    "status":404,
+                    "response-type":"Text",
+                    "description": "email not found in quarantine"
+                },
+                {
+                    "status":502,
+                    "response-type":"Text",
+                    "description": "error in database or in backend server"
                 }
             ]
         }
