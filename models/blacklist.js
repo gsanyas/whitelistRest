@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require("./sequelize");
 const { User } = require('./user')
 
-const WhiteList = sequelize.define("white_list",
+const BlackList = sequelize.define("black_list",
     {
         id: {
             type: DataTypes.INTEGER,
@@ -20,11 +20,11 @@ const WhiteList = sequelize.define("white_list",
         timestamps: false,
     }
 )
-WhiteList.belongsTo(User, {
+BlackList.belongsTo(User, {
     onDelete: 'RESTRICT',
     foreignKey: {
         fieldName: 'fk_user',
     },
     targetKey: 'id'
 });
-exports.WhiteList = WhiteList;
+exports.BlackList = BlackList;

@@ -6,7 +6,8 @@ const Quarantine = sequelize.define("quarantine",
     {
         id: {
             type: DataTypes.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         fk_user: {
             type: DataTypes.INTEGER

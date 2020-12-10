@@ -3,10 +3,11 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 
-const { checkToken } = require('./utils/checktoken');
+const { checkToken } = require('./filters/checktoken');
+const { checkEmail } = require('./filters/checkEmail');
 const { loginController, isConnected } = require('./controllers/loginController');
 const { register } = require('./controllers/registerController');
-const { getEmail, checkEmail, deleteEmail, restoreEmail } = require('./controllers/emailController');
+const { getEmail, deleteEmail, restoreEmail, putInWhiteList, putInBlackList } = require('./controllers/emailController');
 const { getUser } = require('./controllers/userController');
 const { verifyEmail } = require('./controllers/captchaController');
 const model = require('./model-routes.json');
@@ -34,7 +35,9 @@ app.post('/login', loginController);
 app.get('/api/connect', checkToken, isConnected);
 app.get('/api/emails', checkToken, getEmail);
 app.get('/api/user', checkToken, getUser);
-app.delete('/api/emails', checkToken, checkEmail, deleteEmail);
-app.put('/api/emails/restore', checkToken, checkEmail, restoreEmail)
+app.delete('/api/emails/:id', checkToken, checkEmail, deleteEmail);
+app.put('/api/emails/restore/:id', checkToken, checkEmail, restoreEmail)
+app.put('/api/whitelist/:id', checkToken, checkEmail, putInWhiteList);
+app.put('/api/blacklist/:id', checkToken, checkEmail, putInBlackList);
 app.put('/api/verify/:id', verifyEmail)
 app.post('/register', register)
