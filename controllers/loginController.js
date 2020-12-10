@@ -17,7 +17,7 @@ exports.loginController = async (req,res) => {
         res.send("Error : user don't exist");
     }
     else {
-        if (password === user["password"]) {
+        if (password === user["password"]) { // TODO: check the password with the hash the password
             const privateKey = fs.readFileSync('./private.pem', 'utf8');
             const token = jwt.sign({ "id": user["id"] }, privateKey , { algorithm: 'HS256'});
             res.cookie('authcookie', token, cookieConfig);
