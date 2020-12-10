@@ -4,3 +4,4 @@ private.pem.pub
 public.pub
 /.idea
 .env
+config.json
