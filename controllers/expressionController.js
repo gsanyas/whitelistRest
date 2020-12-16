@@ -1,7 +1,7 @@
 replaceAllRegexSpecial = str => {
     var mystr = str
     const regexSpecial = "?[$#+-|'.,!^()]/{}=<>\\"
-    regexSpecial.split().forEach(c => {
+    regexSpecial.split('').forEach(c => {
         mystr = mystr.replace(c,"\\"+c)
     })
     return mystr
