@@ -38,7 +38,6 @@ exports.addRegular = (list,regularList) => async (req,res) => {
     }
 }
 
-// in progress
 exports.getRegular = (list,regularList) => async (req,res) => {
     const userId = req.user;
     const expressions = await regularList.findAll({
@@ -46,5 +45,13 @@ exports.getRegular = (list,regularList) => async (req,res) => {
             fk_user: userId
         }
     })
-    res.status(200).send(expressions.map(e => e))
+    const list_content = await list.findAll({
+        where: {
+            fk_user: userId
+        }
+    })
+    const result = expressions.map(e => e.user_expression).concat(
+        list_content.map(e => e.email)
+    )
+    res.status(200).send(result)
 }

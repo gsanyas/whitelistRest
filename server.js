@@ -13,7 +13,7 @@ const { verifyEmail } = require('./controllers/captchaController');
 const model = require('./model-routes.json');
 
 const config = require("./config.json");
-const { addRegular } = require('./controllers/expressionController');
+const { addRegular, getRegular } = require('./controllers/expressionController');
 const { WhiteList } = require('./models/whitelist');
 const { WhiteListRegularExpression } = require('./models/whitelistRegularExpression');
 const { BlackListRegularExpression } = require('./models/blacklistRegularExpression');
@@ -48,3 +48,5 @@ app.put('/api/verify/:id', verifyEmail)
 app.post('/register', register)
 app.post('/api/whitelist',checkToken,addRegular(WhiteList,WhiteListRegularExpression))
 app.post('/api/blacklist',checkToken,addRegular(BlackList,BlackListRegularExpression))
+app.get('/api/whitelist',checkToken,getRegular(WhiteList,WhiteListRegularExpression))
+app.get('/api/blacklist',checkToken,getRegular(BlackList,BlackListRegularExpression))
