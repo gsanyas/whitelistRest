@@ -23,13 +23,16 @@ exports.register = async (req, res) => {
         Buffer.from(req.body.email_password)
     )
 
-    User.build({ email: email, full_name: fullName, password: password, email_password: emailPassword.toString("base64") }).save().then(user => {
-        if (user) {
-            res.status(204).send("");
-        } else {
-            res.status(404).send("Register Error");
-        }
-    }).catch(error => {
-        res.status(404).send("Register Error");
+    const user = await User.build({
+        email: email,
+        full_name: fullName,
+        password: password,
+        email_password: emailPassword.toString("base64")
     })
+    const userSaved = user.save()
+    if (userSaved) {
+        res.status(204).send("");
+    } else {
+        res.status(404).send("Register Error");
+    }
 }

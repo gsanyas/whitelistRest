@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require("./sequelize");
-const { User } = require('./user')
+const { User } = require('./user');
 
 const WhiteList = sequelize.define("white_list",
     {

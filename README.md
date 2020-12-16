@@ -8,6 +8,8 @@ Serveur MariaDB
 
 ## Getting started
 
+Avant toute chose, lancer le serveur MariaDB.
+
 ### Installation des packages
 
 ```npm install```
@@ -30,6 +32,7 @@ Créer un fichier appelé `.env` avec toutes les variables d'environnement néce
 
 ```text
 RECAPTCHA_TOKEN=<clé secrète de recaptcha>
+PUBLIC_KEY_PATH=<chemin vers la clé de chiffrement>
 ```
 
 ### Configuration

@@ -3,8 +3,7 @@ const { WhiteList } = require('../models/whitelist')
 const {BlackList} = require('../models/blacklist')
 
 exports.getEmail = async (req, res) => {
-    const userId = req.user // recovered from cookies
-    console.log(userId)
+    const userId = req.user // obtained from cookies
     const quarantines = await Quarantine.findAll({
         where: { fk_user: userId,  to_eliminate: false, to_restore: false}
     })

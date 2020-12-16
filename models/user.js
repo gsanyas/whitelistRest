@@ -17,10 +17,11 @@ const User = sequelize.define( "user",
             unique: true
         },
         email_password: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(512),
+
         },
         password: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(512)
         },
         last_uid_scanned: {
             type: DataTypes.INTEGER,
