@@ -28,7 +28,9 @@ Enter file in which to save the key (.../.ssh/id_rsa) : private.pem
 
 ### Définition des variables d'environnement
 
-Créer un fichier appelé `.env` avec toutes les variables d'environnement nécessaires. Par exemple:
+Créer un fichier appelé `.env` avec toutes les variables d'environnement nécessaires.
+Avec openssl tu crées une clé privée, puis tu extrais une clé publique de la clé privée, ensuite tu mets le chemin de cette clé publique dans le .env (et la clé privé, pour l'instant, doit se trouver dans la racine et s'appeler private.pem).
+Par exemple:
 
 ```text
 RECAPTCHA_TOKEN=<clé secrète de recaptcha>
