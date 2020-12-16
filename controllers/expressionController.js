@@ -4,11 +4,11 @@ exports.addRegular = (list,regularList) => async (req,res) => {
     if (expression === null) res.status(404).send('Expression required')
     if (! expression.match(/.*@.*/)) res.sendStatus(422)
     if (expression.match(/.*\*.*/)) {
-        const regex = expression.replace(/\*/g, ".*")
+        const regex = expression.replace(/\*/g, ".*").replace(/\./g,"\.")
         try {
             await regularList.create({
                 user_expression: expression,
-                expression: "/"+regex+"/",
+                expression: regex,
                 fk_user: userId,
             })
             res.sendStatus(201)
