@@ -7,7 +7,7 @@ exports.getEmail = async (req, res) => {
     const quarantines = await Quarantine.findAll({
         where: { fk_user: userId,  to_eliminate: false, to_restore: false}
     })
-    res.send(quarantines)
+    res.status(200).send(quarantines)
 }
 
 exports.deleteEmail = async (req, res) => {
@@ -18,25 +18,25 @@ exports.deleteEmail = async (req, res) => {
                 id: email.id
             }
         })
-        res.status(204).send("Email deleted")
+        res.sendStatus(204)
     }
     catch(_err) {
-        res.status(502).send("Error while deleting the email.")
+        res.sendStatus(502)
     }
 }
 
 exports.restoreEmail = async (req,res) => {
     const email = req.email
     try {
-        await Quarantine.update({to_restore: true},{
+        const newmail = await Quarantine.update({to_restore: true},{
             where: {
                 id: email.id
             }
         })
-        res.status(201).send("Set email to be restored")
+        res.status(200).send(newmail)
     }
     catch(_err) {
-        res.status(502).send("Error while modifying the email")
+        res.sendStatus(502)
     }
 }
 
@@ -49,7 +49,27 @@ exports.putInWhiteList = async(req,res) => {
                 fk_user: email.fk_user
             }
         })
-        if (senderInWhitelist != null) res.status(304).send("Sender already in whitelist.")
+        if (senderInWhitelist != null) {
+            // If the sender is already in whitelist the quarantine table must have a problem
+            const inQuarantine = Quarantine.findOne({
+                where: {
+                    email: email.email_sender,
+                    fk_user: email.fk_user,
+                    to_restore: false
+                }
+            })
+            if (inQuarantine === null) res.sendStatus(304)
+            const newquarantine = await Quarantine.update({to_restore: true},{
+                where: {
+                    fk_user: email.fk_user,
+                    email_sender: email.email_sender,
+                    to_restore: false,
+                    to_eliminate: false,
+                    was_restored: false
+                }
+            })
+            res.status(200).send(newquarantine)
+        }
         else {
             await WhiteList.create({
                 email: email.email_sender,
@@ -64,12 +84,12 @@ exports.putInWhiteList = async(req,res) => {
                 }
             })
             // TODO : add http request to backend
-            res.status(201).send("Added sender to whitelist.")
+            res.status(201).send({response: "Added sender to whitelist."})
         }
     }
     catch(err) {
         console.log(JSON.stringify(err))
-        res.status(502).send(err)
+        res.sendStatus(502)
     }
 }
 
@@ -82,7 +102,27 @@ exports.putInBlackList = async(req,res) => {
                 fk_user: email.fk_user
             }
         })
-        if (senderInBlacklist != null) res.status(304).send("Sender already in blacklist.")
+        if (senderInBlacklist != null) {
+            // If the sender is already in whitelist the quarantine table must have a problem
+            const inQuarantine = Quarantine.findOne({
+                where: {
+                    email: email.email_sender,
+                    fk_user: email.fk_user,
+                    to_eliminate: false
+                }
+            })
+            if (inQuarantine === null) res.sendStatus(304)
+            const newquarantine = await Quarantine.update({to_eliminate: true},{
+                where: {
+                    fk_user: email.fk_user,
+                    email_sender: email.email_sender,
+                    to_restore: false,
+                    to_eliminate: false,
+                    was_restored: false
+                }
+            })
+            res.status(200).send(newquarantine)
+        }
         else {
             await BlackList.create({
                 email: email.email_sender,
@@ -102,6 +142,6 @@ exports.putInBlackList = async(req,res) => {
     }
     catch(err) {
         console.log(JSON.stringify(err))
-        res.status(502).send(err)
+        res.sendStatus(502)
     }
 }
