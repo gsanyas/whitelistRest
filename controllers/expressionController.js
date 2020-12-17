@@ -15,23 +15,23 @@ exports.addRegular = (list,regularList) => async (req,res) => {
     if (expression.match(/.*\*.*/)) {
         const regex = replaceAllRegexSpecial(expression).replace(/\*/g, ".*")
         try {
-            await regularList.create({
+            const result = await regularList.create({
                 user_expression: expression,
                 expression: regex,
                 fk_user: userId,
             })
-            res.sendStatus(201)
+            res.status(201).send(result)
         } catch(error) {
             res.sendStatus(502)
         }
     }
     else {
         try {
-            await list.create({
+            const result = await list.create({
                 email: expression,
                 fk_user: userId,
             })
-            res.sendStatus(201)
+            res.status(201).send(result)
         } catch (error) {
             res.sendStatus(502)
         }
