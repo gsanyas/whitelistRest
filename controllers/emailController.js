@@ -71,7 +71,7 @@ exports.putInWhiteList = async(req,res) => {
             res.status(200).send(newquarantine)
         }
         else {
-            await WhiteList.create({
+            const result = await WhiteList.create({
                 email: email.email_sender,
                 fk_user: email.fk_user
             })
@@ -84,7 +84,7 @@ exports.putInWhiteList = async(req,res) => {
                 }
             })
             // TODO : add http request to backend
-            res.status(201).send({response: "Added sender to whitelist."})
+            res.status(201).send(result)
         }
     }
     catch(err) {
@@ -124,7 +124,7 @@ exports.putInBlackList = async(req,res) => {
             res.status(200).send(newquarantine)
         }
         else {
-            await BlackList.create({
+            const result = await BlackList.create({
                 email: email.email_sender,
                 fk_user: email.fk_user
             })
@@ -137,7 +137,7 @@ exports.putInBlackList = async(req,res) => {
                 }
             })
             // TODO : add http request to backend
-            res.status(201).send("Added sender to blacklist.")
+            res.status(201).send(result)
         }
     }
     catch(err) {
