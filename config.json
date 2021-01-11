@@ -1,11 +1,11 @@
 {
-    "port": 8070,
-    "origin": "http://localhost:4200",
-    "database": {
-        "name": "whitelist",
-        "username": "root",
-        "password": "",
-        "host": "localhost",
-        "dialect": "mariadb"
-    }
+  "port": 8070,
+  "origin": "http://localhost:4200",
+  "database": {
+    "name": "whitelist",
+    "username": "root",
+    "password": "",
+    "host": "localhost",
+    "dialect": "mariadb"
+  }
 }

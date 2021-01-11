@@ -12,7 +12,7 @@ Avant toute chose, lancer le serveur MariaDB.
 
 ### Installation des packages
 
-```npm install```
+`npm install`
 
 ### Création de la clé dans la racine du projet
 
