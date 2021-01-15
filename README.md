@@ -48,3 +48,14 @@ Voir fichier `config.json`
 ### Utilisation
 
 Endpoints définis dans ./server.js
+
+### Exécution avec Docker
+
+Construire le container
+
+`sudo docker build -t project_api .`
+
+Exécuter le container
+
+`sudo docker run -it --init --env RECAPTCHA_TOKEN=<TOKEN> --env PUBLIC_KEY_PATH=<PATH to the public key file> -p 8070:8070 project_api`
+
