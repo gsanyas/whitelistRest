@@ -1,13 +1,19 @@
 const { Sequelize } = require('sequelize')
 const config = require('../config.json').database
+require('dotenv').config()
 
 var exports = (module.exports = {})
 
 // Database connexion and sync
-const sequelize = new Sequelize(config.name, config.username, config.password, {
-    host: config.host,
-    dialect: config.dialect
-}) //sequelize is an instance of connexion, while Sequelize is the whole library
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD,
+    {
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT
+    }
+) //sequelize is an instance of connexion, while Sequelize is the whole library
 exports.sequelize = sequelize
 
 const connect = async () => {
