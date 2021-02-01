@@ -16,9 +16,9 @@ const {
 } = require('./controllers/emailController')
 const { getUser, setParam } = require('./controllers/userController')
 const { verifyEmail } = require('./controllers/captchaController')
-const model = require('./model-routes.json')
+const model = require('../model-routes.json')
 
-const config = require('./config.json')
+const config = require('../config.json')
 const { addRegular, getRegular } = require('./controllers/expressionController')
 const { WhiteList } = require('./models/whitelist')
 const { WhiteListRegularExpression } = require('./models/whitelistRegularExpression')
@@ -38,7 +38,6 @@ app.listen(config.port, () => {
 })
 
 /* Routes */
-/* See model-routes.json file for more details about each route */
 
 app.get('/help', (_req, res) => res.status(200).json(model))
 app.post('/login', loginController)
