@@ -3,6 +3,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const router = require('./routes')
 require('dotenv').config()
+const { checkToken } = require('./filters/checktoken')
 
 // Express routing
 const app = express()

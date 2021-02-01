@@ -1,5 +1,3 @@
-const { checkToken } = require('./filters/checktoken')
-
 const model = require('../model-routes.json')
 
 const lrRouter = require('./routes/lr')
