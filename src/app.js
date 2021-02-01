@@ -19,7 +19,6 @@ const { getUser, setParam } = require('./controllers/userController')
 const { verifyEmail } = require('./controllers/captchaController')
 const model = require('../model-routes.json')
 
-const config = require('../config.json')
 const { addRegular, getRegular } = require('./controllers/expressionController')
 const { WhiteList } = require('./models/whitelist')
 const { WhiteListRegularExpression } = require('./models/whitelistRegularExpression')
@@ -32,11 +31,6 @@ const app = express()
 app.use(cors({ credentials: true, origin: process.env.ORIGIN_URI }))
 app.use(cookieParser())
 app.use(express.json())
-
-// listen to incoming requests on port 8000
-app.listen(config.port, () => {
-    console.log('Server started !')
-})
 
 /* Routes */
 

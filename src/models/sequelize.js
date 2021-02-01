@@ -1,5 +1,4 @@
 const { Sequelize } = require('sequelize')
-const config = require('../config.json').database
 require('dotenv').config()
 
 var exports = (module.exports = {})
