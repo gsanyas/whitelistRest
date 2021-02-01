@@ -11,6 +11,9 @@ app.use(cors({ credentials: true, origin: process.env.ORIGIN_URI }))
 app.use(cookieParser())
 app.use(express.json())
 
+// Authentication middleware
+app.use('/auth', checkToken)
+
 app.use('/', router)
 
 module.exports = app
