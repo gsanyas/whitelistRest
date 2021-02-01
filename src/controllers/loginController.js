@@ -9,12 +9,16 @@ const cookieConfig = {
     signed: false //the token is already signed
 }
 
+/**
+ * Controller for Login Operations
+ * See the OpenAPI documentation for more information
+ */
 exports.loginController = async (req, res) => {
     const email = req.body.email
     const password = req.body.password
     const user = await User.findOne({ where: { email: email } })
     if (user === null) {
-        res.send("Error : user don't exist")
+        res.status(404).send({ message: "Error : user don't exist" })
     } else {
         if (password === user['password']) {
             // TODO: check the password with the hash the password
@@ -23,11 +27,72 @@ exports.loginController = async (req, res) => {
             res.cookie('authcookie', token, cookieConfig)
             res.status(200).send({ setCookie: true })
         } else {
-            res.status(403).send('Error : invalid password')
+            res.status(403).send({ message: 'Error : invalid password' })
         }
     }
 }
 
-exports.isConnected = async (_req, res) => {
-    res.status(200).send({ connected: true })
+/**
+ * Swagger documentation
+ */
+exports.loginSwagger = {
+    post: {
+        tags: ['Login'],
+        summary: 'Login',
+        requestBody: {
+            description: 'Connexion information',
+            required: true,
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            email: { type: 'string' },
+                            password: { type: 'string' }
+                        },
+                        example: { email: 'user1@email.com', password: 'user56' }
+                    }
+                }
+            }
+        },
+        responses: {
+            200: {
+                description: 'success',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: { setCookie: { type: 'boolean' } },
+                            example: { setCookie: true }
+                        }
+                    }
+                }
+            },
+            403: {
+                description:
+                    'The user address was found, but the password given is not the correct one.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: { message: { type: 'string' } },
+                            example: { message: 'Error : invalid password' }
+                        }
+                    }
+                }
+            },
+            404: {
+                description: 'The user address was not found.',
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: { message: { type: 'string' } },
+                            example: { message: "Error : user don't exist" }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

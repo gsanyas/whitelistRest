@@ -1,6 +1,6 @@
 const model = require('../model-routes.json')
-
-const lrRouter = require('./routes/lr')
+const _ = require('lodash')
+const { router: lrRouter, swagger: lrSwaggerSource } = require('./routes/lr')
 const emailRouter = require('./routes/emails')
 const listRouter = require('./routes/list')
 const userRouter = require('./routes/user')
@@ -11,6 +11,7 @@ const router = express.Router()
 
 // Login - Register routes
 router.use('/lr', lrRouter)
+const lrSwagger = _.mapKeys(lrSwaggerSource, (_value, key) => '/lr' + key)
 
 // Resource routes
 router.use('/auth/emails', emailRouter)
@@ -21,6 +22,13 @@ router.use('/auth/user', userRouter)
 router.use('/verify', verifyRouter)
 
 // Other routes
+
+/**
+ * GET /help
+ * @summary Gives indications on the available endpoints
+ * @return {object} 200 - endpoint model
+ */
 router.get('/help', (_req, res) => res.status(200).json(model))
 
-module.exports = router
+exports.router = router
+exports.swagger = { ...lrSwagger }
