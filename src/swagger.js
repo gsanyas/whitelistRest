@@ -21,6 +21,12 @@ const options = {
             url: 'http://localhost:8070/'
         }
     ],
+    components: {
+        securitySchemes: { cookieAuth: { type: 'apiKey', in: 'cookie', name: 'authcookie' } },
+        responses: {
+            UnauthorizedError: { description: 'Authentication information is missing or invalid' }
+        }
+    },
     // Usage of JS objects instead of Yaml
     paths: swagger
 }

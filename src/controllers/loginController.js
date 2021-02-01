@@ -55,9 +55,16 @@ exports.loginSwagger = {
                 }
             }
         },
+        security: [],
         responses: {
             200: {
-                description: 'success',
+                description:
+                    "Successfully authenticated. The session ID is returned in a cookie named 'authcookie'. You need to include this cookie in subsequent request.",
+                headers: {
+                    'Set-Cookie': {
+                        schema: { type: 'string', example: 'authcookie=56FZ65fez5; PATH=/' }
+                    }
+                },
                 content: {
                     'application/json': {
                         schema: {
