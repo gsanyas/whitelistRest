@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const router = require('./routes')
 require('dotenv').config()
 
 // Express routing
@@ -10,6 +11,6 @@ app.use(cors({ credentials: true, origin: process.env.ORIGIN_URI }))
 app.use(cookieParser())
 app.use(express.json())
 
-require('./routes')(app)
+app.use('/', router)
 
-exports.app = app
+module.exports = app

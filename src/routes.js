@@ -20,21 +20,24 @@ const { WhiteListRegularExpression } = require('./models/whitelistRegularExpress
 const { BlackListRegularExpression } = require('./models/blacklistRegularExpression')
 const { BlackList } = require('./models/blacklist')
 
-module.exports = function (app) {
-    app.get('/help', (_req, res) => res.status(200).json(model))
-    app.post('/login', loginController)
-    app.get('/api/connect', checkToken, isConnected)
-    app.get('/api/emails', checkToken, getEmail)
-    app.get('/api/user', checkToken, getUser)
-    app.delete('/api/emails/:id', checkToken, checkEmail, deleteEmail)
-    app.put('/api/emails/restore/:id', checkToken, checkEmail, restoreEmail)
-    app.put('/api/whitelist/:id', checkToken, checkEmail, putInWhiteList)
-    app.put('/api/blacklist/:id', checkToken, checkEmail, putInBlackList)
-    app.put('/api/verify/:id', verifyEmail)
-    app.post('/register', register)
-    app.post('/api/whitelist', checkToken, addRegular(WhiteList, WhiteListRegularExpression))
-    app.post('/api/blacklist', checkToken, addRegular(BlackList, BlackListRegularExpression))
-    app.get('/api/whitelist', checkToken, getRegular(WhiteList, WhiteListRegularExpression))
-    app.get('/api/blacklist', checkToken, getRegular(BlackList, BlackListRegularExpression))
-    app.put('/api/user/:userparam', checkToken, checkUserParam, setParam)
-}
+const express = require('express'),
+    router = express.Router()
+
+router.get('/help', (_req, res) => res.status(200).json(model))
+router.post('/login', loginController)
+router.get('/api/connect', checkToken, isConnected)
+router.get('/api/emails', checkToken, getEmail)
+router.get('/api/user', checkToken, getUser)
+router.delete('/api/emails/:id', checkToken, checkEmail, deleteEmail)
+router.put('/api/emails/restore/:id', checkToken, checkEmail, restoreEmail)
+router.put('/api/whitelist/:id', checkToken, checkEmail, putInWhiteList)
+router.put('/api/blacklist/:id', checkToken, checkEmail, putInBlackList)
+router.put('/api/verify/:id', verifyEmail)
+router.post('/register', register)
+router.post('/api/whitelist', checkToken, addRegular(WhiteList, WhiteListRegularExpression))
+router.post('/api/blacklist', checkToken, addRegular(BlackList, BlackListRegularExpression))
+router.get('/api/whitelist', checkToken, getRegular(WhiteList, WhiteListRegularExpression))
+router.get('/api/blacklist', checkToken, getRegular(BlackList, BlackListRegularExpression))
+router.put('/api/user/:userparam', checkToken, checkUserParam, setParam)
+
+module.exports = router
