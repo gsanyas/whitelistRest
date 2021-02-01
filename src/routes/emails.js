@@ -6,8 +6,8 @@ const {
     restoreEmail,
     putInWhiteList,
     putInBlackList
-} = require('./controllers/emailController')
-const { checkEmail } = require('./filters/checkEmail')
+} = require('../controllers/emailController')
+const { checkEmail } = require('../filters/checkEmail')
 
 router.get('/', getEmail)
 router.delete('/:id', checkEmail, deleteEmail)
