@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express')
-const {router} = require('./routes')
+const { router, swagger } = require('./routes')
 require('dotenv').config()
 const { checkToken } = require('./filters/checktoken')
 const options = require('./swagger')
@@ -16,6 +16,8 @@ app.use(express.json())
 
 // Swagger documentation
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(options))
+
+app.get('/testme', (req, res) => res.send(JSON.stringify(swagger)))
 
 // Authentication middleware
 app.use('/auth', checkToken)

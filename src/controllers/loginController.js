@@ -1,6 +1,7 @@
 const { User } = require('../models/user')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
+const { messageComponent } = require('../utils')
 
 const cookieConfig = {
     httpOnly: false, // set true in final version, without the proxy
@@ -78,27 +79,11 @@ exports.loginSwagger = {
             403: {
                 description:
                     'The user address was found, but the password given is not the correct one.',
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'object',
-                            properties: { message: { type: 'string' } },
-                            example: { message: 'Error : invalid password' }
-                        }
-                    }
-                }
+                content: messageComponent('Error : invalid password')
             },
             404: {
                 description: 'The user address was not found.',
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'object',
-                            properties: { message: { type: 'string' } },
-                            example: { message: "Error : user don't exist" }
-                        }
-                    }
-                }
+                content: messageComponent("Error : user don't exist")
             }
         }
     }

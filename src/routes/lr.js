@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const { loginController, loginSwagger } = require('../controllers/loginController')
-const { register } = require('../controllers/registerController')
+const { register, registerSwagger } = require('../controllers/registerController')
 
 router.post('/login', loginController)
 router.post('/register', register)
@@ -13,6 +13,7 @@ router.get('/auth/connect', async (_req, res) => {
 exports.router = router
 exports.swagger = {
     '/login': loginSwagger,
+    '/register': registerSwagger,
     '/auth/connect': {
         get: {
             security: [{ cookieAuth: [] }],
@@ -30,6 +31,7 @@ exports.swagger = {
                         }
                     }
                 },
+                // prettier-ignore
                 401: { "\$ref": '#/components/responses/UnauthorizedError' }
             }
         }
