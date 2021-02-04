@@ -18,13 +18,20 @@ const encryptPassword = password => {
 }
 
 // TODO : hash the password
-exports.createUser = (email, password, fullName, emailPassword) =>
-    User.build({
-        email: email,
-        full_name: fullName,
-        password: password,
-        email_password: encryptPassword(emailPassword).toString('base64')
-    })
+exports.createUser = async (email, password, fullName, emailPassword) => {
+    try {
+        return await User.create({
+            email: email,
+            full_name: fullName,
+            password: password,
+            email_password: encryptPassword(emailPassword).toString('base64')
+        })
+    } catch (error) {
+        return undefined
+    }
+}
+
+exports.findUserByEmail = email => User.findOne({ where: { email: email } })
 
 exports.findUser = userId =>
     User.findOne({

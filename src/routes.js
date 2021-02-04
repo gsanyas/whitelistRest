@@ -1,7 +1,7 @@
 const model = require('../model-routes.json')
 const _ = require('lodash')
 const { router: lrRouter, swagger: lrSwaggerSource } = require('./routes/lr')
-const emailRouter = require('./routes/emails')
+const { emailRouter, emailsSwagger } = require('./routes/emails')
 const listRouter = require('./routes/list')
 const userRouter = require('./routes/user')
 const verifyRouter = require('./routes/verify')
@@ -12,6 +12,7 @@ const router = express.Router()
 // Login - Register routes
 router.use('/lr', lrRouter)
 const lrSwagger = _.mapKeys(lrSwaggerSource, (_value, key) => '/lr' + key)
+const mailSwagger = _.mapKeys(emailsSwagger, (_value, key) => '/emails' + key)
 
 // Resource routes
 router.use('/auth/emails', emailRouter)
@@ -31,4 +32,4 @@ router.use('/verify', verifyRouter)
 router.get('/help', (_req, res) => res.status(200).json(model))
 
 exports.router = router
-exports.swagger = { ...lrSwagger }
+exports.swagger = { ...lrSwagger, ...mailSwagger }

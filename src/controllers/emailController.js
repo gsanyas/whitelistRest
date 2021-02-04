@@ -1,6 +1,8 @@
-const { Quarantine } = require('../models/quarantine')
+const { Quarantine, QuarantineSwagger } = require('../models/quarantine')
 const { WhiteList } = require('../models/whitelist')
 const { BlackList } = require('../models/blacklist')
+const { messageComponent, internalError } = require('../utils')
+const { messageObject } = require('../messages')
 
 exports.getEmail = async (req, res) => {
     const userId = req.user // obtained from cookies
@@ -12,18 +14,23 @@ exports.getEmail = async (req, res) => {
 
 exports.deleteEmail = async (req, res) => {
     const email = req.email
+    const userId = req.user // obtained from cookies
+    if (email.to_eliminate || email.to_restore || email.was_restored) {
+        res.status(404).json(messageObject[404])
+    }
     try {
         await Quarantine.update(
             { to_eliminate: true },
             {
                 where: {
-                    id: email.id
+                    id: email.id,
+                    fk_user: userId
                 }
             }
         )
-        res.sendStatus(204)
-    } catch (_err) {
-        res.sendStatus(502)
+        res.status(200).json({ message: 'Email deleted.' })
+    } catch (error) {
+        res.status(500).json(internalError)
     }
 }
 

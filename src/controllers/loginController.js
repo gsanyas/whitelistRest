@@ -1,7 +1,6 @@
 const { User } = require('../models/user')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
-const { messageComponent } = require('../utils')
 
 const cookieConfig = {
     httpOnly: false, // set true in final version, without the proxy
@@ -11,6 +10,39 @@ const cookieConfig = {
 }
 
 /**
+ * Prototype sent by the checkBody filter
+ * It is also used by the OpenAPI docs
+ */
+exports.loginBodyPrototype = {
+    email: {
+        type: 'string',
+        required: true,
+        description: 'The email of the user who tries to log in.'
+    },
+    password: {
+        type: 'string',
+        required: true,
+        description: 'The password of the user who tries to log in.'
+    }
+}
+
+exports.loginBadUserError = {
+    type: '/login-user',
+    title: 'Invalid user',
+    status: 404,
+    details: 'The email address given do not exist.'
+}
+
+exports.loginWrongPasswordError = {
+    type: '/login-password',
+    title: 'Invalid password',
+    status: 403,
+    details: 'The password given does not correspond to this email.'
+}
+
+exports.loginSuccessMessage = { setCookie: true }
+
+/**
  * Controller for Login Operations
  * See the OpenAPI documentation for more information
  */
@@ -18,73 +50,17 @@ exports.loginController = async (req, res) => {
     const email = req.body.email
     const password = req.body.password
     const user = await User.findOne({ where: { email: email } })
-    if (user === null) {
-        res.status(404).send({ message: "Error : user don't exist" })
+    if (!user) {
+        res.status(404).send(this.loginBadUserError)
     } else {
         if (password === user['password']) {
             // TODO: check the password with the hash the password
             const privateKey = fs.readFileSync('./private.pem', 'utf8')
             const token = jwt.sign({ id: user['id'] }, privateKey, { algorithm: 'HS256' })
             res.cookie('authcookie', token, cookieConfig)
-            res.status(200).send({ setCookie: true })
+            res.status(200).json(this.loginSuccessMessage)
         } else {
-            res.status(403).send({ message: 'Error : invalid password' })
-        }
-    }
-}
-
-/**
- * Swagger documentation
- */
-exports.loginSwagger = {
-    post: {
-        tags: ['Login'],
-        summary: 'Login',
-        requestBody: {
-            description: 'Connexion information',
-            required: true,
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            email: { type: 'string' },
-                            password: { type: 'string' }
-                        },
-                        example: { email: 'user1@email.com', password: 'user56' }
-                    }
-                }
-            }
-        },
-        security: [],
-        responses: {
-            200: {
-                description:
-                    "Successfully authenticated. The session ID is returned in a cookie named 'authcookie'. You need to include this cookie in subsequent request.",
-                headers: {
-                    'Set-Cookie': {
-                        schema: { type: 'string', example: 'authcookie=56FZ65fez5; PATH=/' }
-                    }
-                },
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'object',
-                            properties: { setCookie: { type: 'boolean' } },
-                            example: { setCookie: true }
-                        }
-                    }
-                }
-            },
-            403: {
-                description:
-                    'The user address was found, but the password given is not the correct one.',
-                content: messageComponent('Error : invalid password')
-            },
-            404: {
-                description: 'The user address was not found.',
-                content: messageComponent("Error : user don't exist")
-            }
+            res.status(403).json(this.loginWrongPasswordError)
         }
     }
 }
