@@ -1,24 +1,29 @@
 const express = require('express')
 const router = express.Router()
-const {
-    getEmail,
-    deleteEmail,
-    restoreEmail,
-    putInWhiteList,
-    putInBlackList
-} = require('../controllers/emailController')
+const { getEmail, deleteEmail, restoreEmail, putInList } = require('../controllers/emailController')
 const { checkEmail } = require('../filters/checkEmail')
-const { getEmailSwagger, deleteEmailSwagger } = require('../swagger/emailSwagger')
+const { BlackList } = require('../models/blacklist')
+const { WhiteList } = require('../models/whitelist')
+const {
+    getEmailSwagger,
+    deleteEmailSwagger,
+    restoreEmailSwagger,
+    putInWhiteListSwagger,
+    putInBlackListSwagger
+} = require('../swagger/emailSwagger')
 
 router.get('/', getEmail)
 router.delete('/:id', checkEmail, deleteEmail)
 router.put('/restore/:id', checkEmail, restoreEmail)
-router.put('/whitelist/:id', checkEmail, putInWhiteList)
-router.put('/blacklist/:id', checkEmail, putInBlackList)
+router.put('/whitelist/:id', checkEmail, putInList(WhiteList))
+router.put('/blacklist/:id', checkEmail, putInList(BlackList))
 
 exports.emailRouter = router
 
 exports.emailsSwagger = {
     '/': getEmailSwagger,
-    '/:id': deleteEmailSwagger
+    '/:id': deleteEmailSwagger,
+    '/restore/:id': restoreEmailSwagger,
+    'whitelist/:id': putInWhiteListSwagger,
+    'blacklist/:id': putInBlackListSwagger
 }

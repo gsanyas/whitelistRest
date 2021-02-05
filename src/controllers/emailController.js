@@ -1,23 +1,21 @@
-const { Quarantine, QuarantineSwagger } = require('../models/quarantine')
+const { Quarantine, QuarantineSwagger, quarantineFilter } = require('../models/quarantine')
 const { WhiteList } = require('../models/whitelist')
 const { BlackList } = require('../models/blacklist')
 const { messageComponent, internalError } = require('../utils')
 const { messageObject } = require('../messages')
+const { listFilter } = require('../services/listServices')
 
 exports.getEmail = async (req, res) => {
     const userId = req.user // obtained from cookies
     const quarantines = await Quarantine.findAll({
-        where: { fk_user: userId, to_eliminate: false, to_restore: false }
+        where: { fk_user: userId, to_eliminate: false, to_restore: false, was_restored: false }
     })
-    res.status(200).send(quarantines)
+    res.status(200).send(quarantines.map(quarantineFilter))
 }
 
 exports.deleteEmail = async (req, res) => {
     const email = req.email
     const userId = req.user // obtained from cookies
-    if (email.to_eliminate || email.to_restore || email.was_restored) {
-        res.status(404).json(messageObject[404])
-    }
     try {
         await Quarantine.update(
             { to_eliminate: true },
@@ -45,33 +43,31 @@ exports.restoreEmail = async (req, res) => {
                 }
             }
         )
-        res.status(200).send(newmail)
+        res.status(200).send(quarantineFilter(newmail))
     } catch (_err) {
-        res.sendStatus(502)
+        res.status(500).json(internalError)
     }
 }
 
-exports.putInWhiteList = async (req, res) => {
+/**
+ * Send the sender of the selected email to the corresponding list
+ * If the sender is already in the list, restore or delete all his mails depending of the list
+ * @param {WhiteList or BlackList} list
+ */
+exports.putInList = list => async (req, res) => {
     const email = req.email
     try {
-        const senderInWhitelist = await WhiteList.findOne({
+        const senderInlist = await list.findOne({
             where: {
                 email: email.email_sender,
                 fk_user: email.fk_user
             }
         })
-        if (senderInWhitelist != null) {
-            // If the sender is already in whitelist the quarantine table must have a problem
-            const inQuarantine = Quarantine.findOne({
-                where: {
-                    email: email.email_sender,
-                    fk_user: email.fk_user,
-                    to_restore: false
-                }
-            })
-            if (inQuarantine === null) res.sendStatus(304)
+        if (senderInlist != null) {
+            // If the sender is already in list the quarantine table must have a problem
+            // We know there is at least one item to change here thanks to the previous checkemail filter
             const newquarantine = await Quarantine.update(
-                { to_restore: true },
+                { to_restore: list === WhiteList, to_eliminate: list === BlackList },
                 {
                     where: {
                         fk_user: email.fk_user,
@@ -82,14 +78,14 @@ exports.putInWhiteList = async (req, res) => {
                     }
                 }
             )
-            res.status(200).send(newquarantine)
+            res.status(200).send(quarantineFilter(newquarantine))
         } else {
-            const result = await WhiteList.create({
+            const result = await list.create({
                 email: email.email_sender,
                 fk_user: email.fk_user
             })
             await Quarantine.update(
-                { to_restore: true },
+                { to_restore: list === WhiteList, to_eliminate: list === BlackList },
                 {
                     where: {
                         fk_user: email.fk_user,
@@ -100,67 +96,10 @@ exports.putInWhiteList = async (req, res) => {
                 }
             )
             // TODO : add http request to backend
-            res.status(201).send(result)
+            res.status(201).send(listFilter(result))
         }
     } catch (err) {
         console.log(JSON.stringify(err))
-        res.sendStatus(502)
-    }
-}
-
-exports.putInBlackList = async (req, res) => {
-    const email = req.email
-    try {
-        const senderInBlacklist = await BlackList.findOne({
-            where: {
-                email: email.email_sender,
-                fk_user: email.fk_user
-            }
-        })
-        if (senderInBlacklist != null) {
-            // If the sender is already in whitelist the quarantine table must have a problem
-            const inQuarantine = Quarantine.findOne({
-                where: {
-                    email: email.email_sender,
-                    fk_user: email.fk_user,
-                    to_eliminate: false
-                }
-            })
-            if (inQuarantine === null) res.sendStatus(304)
-            const newquarantine = await Quarantine.update(
-                { to_eliminate: true },
-                {
-                    where: {
-                        fk_user: email.fk_user,
-                        email_sender: email.email_sender,
-                        to_restore: false,
-                        to_eliminate: false,
-                        was_restored: false
-                    }
-                }
-            )
-            res.status(200).send(newquarantine)
-        } else {
-            const result = await BlackList.create({
-                email: email.email_sender,
-                fk_user: email.fk_user
-            })
-            await Quarantine.update(
-                { to_eliminate: true },
-                {
-                    where: {
-                        fk_user: email.fk_user,
-                        email_sender: email.email_sender,
-                        to_restore: false,
-                        was_restored: false
-                    }
-                }
-            )
-            // TODO : add http request to backend
-            res.status(201).send(result)
-        }
-    } catch (err) {
-        console.log(JSON.stringify(err))
-        res.sendStatus(502)
+        res.status(500).json(internalError)
     }
 }
