@@ -1,4 +1,4 @@
-const { swagger } = require('./routes')
+const { swagger } = require('./swagger/routerSwagger')
 
 const options = {
     openapi: '3.0.0',

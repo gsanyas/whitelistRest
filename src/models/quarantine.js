@@ -55,30 +55,3 @@ Quarantine.belongsTo(User, {
     targetKey: 'id'
 })
 exports.Quarantine = Quarantine
-
-exports.quarantineFilter = quarantine => ({
-    id: quarantine.id,
-    email_sender: quarantine.email_sender,
-    email_subject: quarantine.email_subject,
-    email_size: quarantine.email_size
-})
-
-exports.QuarantineSwagger = {
-    'application/json': {
-        schema: {
-            type: 'object',
-            properties: {
-                id: { type: 'string' },
-                email_sender: { type: 'string' },
-                email_subject: { type: 'string' },
-                email_size: { type: 'number' }
-            },
-            example: {
-                id: 9,
-                email_sender: 'jack@email.com',
-                email_subject: 'hello',
-                email_size: 150
-            }
-        }
-    }
-}

@@ -3,10 +3,14 @@ const {
     loginSuccessMessage,
     loginWrongPasswordError,
     loginBadUserError
-} = require('../controllers/loginController')
-const { swaggerJsonContent, swaggerErrorContent, swaggerErrorListContent } = require('../utils')
+} = require('../../controllers/loginController')
+const {
+    swaggerJsonContent,
+    swaggerErrorContent,
+    swaggerErrorListContent
+} = require('../utilSwagger')
 
-const { badBodyError } = require('../filters/checkBody')
+const { badBodyError } = require('../../filters/checkBody')
 
 const loginSuccessPrototype = {
     setCookie: {

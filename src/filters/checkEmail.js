@@ -1,5 +1,4 @@
 const { Quarantine } = require('../models/quarantine')
-const { swaggerErrorContent } = require('../utils')
 
 exports.emailNotFoundErrorMessage = type => ({
     type: type,
@@ -27,8 +26,3 @@ exports.checkEmail = typeError404 => async (req, res, next) => {
         next()
     }
 }
-
-exports.emailNotFoundSwagger = type => ({
-    description: 'The requested email was not found.',
-    content: swaggerErrorContent(this.emailNotFoundErrorMessage(type))
-})

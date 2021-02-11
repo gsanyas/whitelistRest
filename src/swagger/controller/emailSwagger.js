@@ -1,8 +1,8 @@
-const { emailNotFoundSwagger } = require('../filters/checkEmail')
-const { checkTokenErrorSwagger } = require('../filters/checktoken')
-const { QuarantineSwagger } = require('../models/quarantine')
-const { messageComponent } = require('../utils')
-const { listSwagger } = require('./model/list')
+const { emailNotFoundSwagger } = require('../filter/checkEmailSwagger')
+const { checkTokenErrorSwagger } = require('../filter/checkTokenSwagger')
+const { QuarantineSwagger } = require('../model/quarantineSwagger')
+const { messageComponentSwagger } = require('../utilSwagger')
+const { listSwagger } = require('../model/list')
 
 const idParameterList = [
     {
@@ -38,7 +38,7 @@ exports.deleteEmailSwagger = {
         responses: {
             200: {
                 description: 'Email deleted',
-                content: messageComponent('Email deleted.')
+                content: messageComponentSwagger('Email deleted.')
             },
             401: checkTokenErrorSwagger,
             404: emailNotFoundSwagger('/emails/delete-email-not-found')

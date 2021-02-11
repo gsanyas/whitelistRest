@@ -1,8 +1,7 @@
-const { Quarantine, QuarantineSwagger, quarantineFilter } = require('../models/quarantine')
+const { Quarantine, quarantineFilter } = require('../models/quarantine')
 const { WhiteList } = require('../models/whitelist')
 const { BlackList } = require('../models/blacklist')
-const { messageComponent, internalError } = require('../utils')
-const { messageObject } = require('../messages')
+const { internalError } = require('../utils')
 const { listFilter } = require('../services/listServices')
 
 exports.getEmail = async (req, res) => {

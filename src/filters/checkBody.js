@@ -1,4 +1,4 @@
-const { isObjectCorrect, swaggerErrorContent } = require('../utils')
+const { isObjectCorrect } = require('../utils')
 
 exports.badBodyError = (type, prototype) => ({
     type: type,
@@ -14,8 +14,3 @@ exports.checkBody = (errorType, prototype) => (req, res, next) => {
         res.status(404).json(this.badBodyError(errorType, prototype))
     }
 }
-
-exports.badBodyErrorSwagger = (type, prototype) => ({
-    description: 'Invalid request body.',
-    content: swaggerErrorContent(this.badBodyError(type, prototype))
-})

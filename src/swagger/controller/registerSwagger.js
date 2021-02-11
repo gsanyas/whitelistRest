@@ -1,7 +1,10 @@
-const { registerBodyPrototype, registerEmailError } = require('../controllers/registerController')
-const { UserSwagger } = require('../models/user')
-const { badBodyErrorSwagger } = require('../filters/checkBody')
-const { swaggerJsonContent, swaggerErrorContent } = require('../utils')
+const {
+    registerBodyPrototype,
+    registerEmailError
+} = require('../../controllers/registerController')
+const { UserSwagger } = require('../model/userSwagger')
+const { badBodyErrorSwagger } = require('../filter/checkBodySwagger')
+const { swaggerJsonContent, swaggerErrorContent } = require('../utilSwagger')
 
 const registerBodyExample = {
     email: 'user1@email.com',

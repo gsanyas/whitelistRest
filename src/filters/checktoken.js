@@ -1,6 +1,5 @@
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
-const { swaggerErrorContent: swaggerError } = require('../utils')
 
 const checkTokenError = {
     type: '/auth',
@@ -20,9 +19,4 @@ exports.checkToken = (req, res, next) => {
             next()
         }
     })
-}
-
-exports.checkTokenErrorSwagger = {
-    description: 'Authentication information is missing or invalid',
-    content: swaggerError(checkTokenError)
 }
