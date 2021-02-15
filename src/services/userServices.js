@@ -77,3 +77,8 @@ exports.changeEmailPassword = (id, value) =>
             }
         }
     )
+
+exports.filterUser = user => ({
+    full_name: user.full_name,
+    email: user.email
+})

@@ -1,4 +1,5 @@
-const { Quarantine, quarantineFilter } = require('../models/quarantine')
+const { Quarantine } = require('../models/quarantine')
+const { quarantineFilter } = require('../services/quarantineService')
 const { WhiteList } = require('../models/whitelist')
 const { BlackList } = require('../models/blacklist')
 const { internalError } = require('../utils')
@@ -32,6 +33,7 @@ exports.deleteEmail = async (req, res) => {
 }
 
 exports.restoreEmail = async (req, res) => {
+    console.log('restore ici')
     const email = req.email
     try {
         const newmail = await Quarantine.update(

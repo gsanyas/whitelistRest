@@ -10,6 +10,6 @@ exports.emailsRouteSwagger = {
     '/': getEmailSwagger,
     '/:id': deleteEmailSwagger,
     '/restore/:id': restoreEmailSwagger,
-    'whitelist/:id': putInWhiteListSwagger,
-    'blacklist/:id': putInBlackListSwagger
+    '/whitelist/:id': putInWhiteListSwagger,
+    '/blacklist/:id': putInBlackListSwagger
 }
