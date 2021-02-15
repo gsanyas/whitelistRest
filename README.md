@@ -35,16 +35,18 @@ Par exemple:
 ```text
 RECAPTCHA_TOKEN=<clé secrète de recaptcha>
 PUBLIC_KEY_PATH=<chemin vers la clé de chiffrement>
+ORIGIN_URI=<URI du frontend, ex: http://localhost:4200>
+DB_NAME=whitelist
+DB_USERNAME=<nom d'utilisateur avec lequel on accède à la base de données>
+DB_PASSWORD=<mot de passe de cet utilisateur>
+DB_HOST=localhost
+DB_DIALECT=mariadb
 ```
-
-### Configuration
-
-Voir fichier `config.json`
 
 ### Lancement du serveur
 
 `npm start`
 
-### Utilisation
+### Documentation
 
-Endpoints définis dans ./server.js
+Accéder via un navigateur au chemin <URI_API>/docs pour avoir une description de chaque route (il en manque encore certaines)
