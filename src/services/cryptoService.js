@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const fs = require('fs')
 const { promisify } = require('util')
+const jwt = require('jsonwebtoken')
 
 /**
  * Promisification of the crypto.pbkdf2 function
@@ -57,4 +58,31 @@ const hashWithNewSalt = async password => {
     return { salt: salt, hash: hashed }
 }
 
-module.exports = { encryptPassword, sha512, hashWithNewSalt }
+/**
+ * Create a jwt token containing an id field
+ * @param {string} value - The value of the id field in the token
+ */
+const signToken = value => {
+    const privateKey = fs.readFileSync('./private.pem', 'utf8')
+    const value = genRandomString(16)
+    const token = jwt.sign({ id: value }, privateKey, { algorithm: 'HS256' })
+    return token
+}
+
+/**
+ * Verify a jwt token synchronously
+ * @param {string} token
+ */
+const checkToken = token => {
+    const private = fs.readFileSync('./private.pem', 'utf8')
+    return jwt.verify(token, private)
+}
+
+module.exports = {
+    encryptPassword,
+    sha512,
+    hashWithNewSalt,
+    genRandomString,
+    signToken,
+    checkToken
+}

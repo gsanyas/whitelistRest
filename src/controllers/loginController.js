@@ -1,7 +1,6 @@
 const fs = require('fs')
-const jwt = require('jsonwebtoken')
 const { internalError } = require('../utils')
-const { checkUserPassword, findUserByEmail } = require('../services/userServices')
+const { checkUserPassword, findUserByEmail, login } = require('../services/userServices')
 
 const cookieConfig = {
     httpOnly: false, // set true in final version, without the proxy
@@ -44,7 +43,7 @@ exports.loginWrongPasswordError = {
 exports.loginSuccessMessage = { setCookie: true }
 
 /**
- * Controller for Login Operations
+ * POST /login
  * See the OpenAPI documentation for more information
  */
 exports.loginController = async (req, res) => {
@@ -57,8 +56,7 @@ exports.loginController = async (req, res) => {
         } else {
             const passwordCorrect = await checkUserPassword(user, password)
             if (passwordCorrect) {
-                const privateKey = fs.readFileSync('./private.pem', 'utf8')
-                const token = jwt.sign({ id: user['id'] }, privateKey, { algorithm: 'HS256' })
+                const token = await login(user)
                 res.cookie('authcookie', token, cookieConfig)
                 res.status(200).json(this.loginSuccessMessage)
             } else {

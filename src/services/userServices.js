@@ -1,11 +1,31 @@
 require('dotenv').config()
-const { encryptPassword, sha512, hashWithNewSalt } = require('./cryptoService')
+const {
+    encryptPassword,
+    sha512,
+    hashWithNewSalt,
+    genRandomString,
+    signToken
+} = require('./cryptoService')
 const { User } = require('../models/user')
+
+/**
+ * Find a token identifier that is not already used in the User table
+ * It should statistically never loop
+ */
+const findNonExistingTokenIdentifier = async () => {
+    let value // token value
+    do {
+        value = genRandomString(16)
+    } while (await User.findOne({ where: { token: value } }))
+    return value
+}
 
 exports.createUser = async (email, password, fullName, emailPassword) => {
     try {
         const { salt, hash } = await hashWithNewSalt(password)
+        const tokenId = await findNonExistingTokenIdentifier()
         return await User.create({
+            token: tokenId,
             email: email,
             full_name: fullName,
             password: hash,
@@ -18,8 +38,6 @@ exports.createUser = async (email, password, fullName, emailPassword) => {
 }
 
 exports.findUserByEmail = email => User.findOne({ where: { email: email } })
-
-exports.findUser = userId => User.findOne({ where: { id: userId } })
 
 exports.changeParam = (id, param, value) => {
     switch (param) {
@@ -56,3 +74,15 @@ exports.filterUser = user => ({ full_name: user.full_name, email: user.email })
  */
 exports.checkUserPassword = async (user, password) =>
     user.password === (await sha512(password, user.salt))
+
+/**
+ * Create a new identifier, store it in the user table, and create a signed token containing this value
+ * @param {User} user
+ */
+exports.login = async user => {
+    const value = await findNonExistingTokenIdentifier()
+    await User.update({ token: value }, { where: { id: user.id } })
+    return signToken(value)
+}
+
+exports.findByToken = token => User.findOne({ where: { token: token } })

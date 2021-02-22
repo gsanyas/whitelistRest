@@ -1,9 +1,8 @@
-const { changeParam, findUser, filterUser } = require('../services/userServices')
+const { changeParam, filterUser } = require('../services/userServices')
 const { internalError } = require('../utils')
 
 exports.getUser = async (req, res) => {
-    const user = await findUser(req.user)
-    res.status(200).json(filterUser(user))
+    res.status(200).json(filterUser(req.user))
 }
 
 exports.wrongParamValueBodyPrototype = param => {
@@ -32,7 +31,7 @@ exports.setParam = async (req, res) => {
     const value = req.body[param]
     if (value === null) res.status(404).json(this.wrongParamValueError)
     try {
-        const result = await changeParam(req.user, param, value)
+        const result = await changeParam(req.user.id, param, value)
         res.status(200).send(result)
     } catch (error) {
         console.log(JSON.stringify(error))

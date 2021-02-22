@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { createUser, findUserByEmail } = require('../services/userServices')
+const { createUser, findUserByEmail, filterUser } = require('../services/userServices')
 const { internalError } = require('../utils')
 
 exports.registerBodyPrototype = {
@@ -36,12 +36,7 @@ exports.register = async (req, res) => {
         req.body.email_password
     )
     if (user) {
-        const sendUser = {
-            id: user.id,
-            full_name: user.full_name,
-            email: user.email
-        }
-        res.status(201).json(sendUser)
+        res.status(201).json(filterUser(user))
     } else if (await findUserByEmail(req.body.email)) {
         res.status(400).json(this.registerEmailError)
     } else {
