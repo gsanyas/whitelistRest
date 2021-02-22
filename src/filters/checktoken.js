@@ -10,7 +10,7 @@ exports.checkTokenError = {
     details: 'Unable to decipher the token in the cookies.'
 }
 
-exports.checkToken = (req, res, next) => {
+exports.checkToken = async (req, res, next) => {
     const authcookie = req.cookies.authcookie
     try {
         const data = checkToken(authcookie)
