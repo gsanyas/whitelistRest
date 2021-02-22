@@ -1,29 +1,15 @@
 require('dotenv').config()
-const crypto = require('crypto')
-const fs = require('fs')
+const { encryptPassword, sha512, hashWithNewSalt } = require('./cryptoService')
 const { User } = require('../models/user')
 
-const encryptPassword = password => {
-    // encryption logic
-    const publicKey = process.env.PUBLIC_KEY_PATH
-    return crypto.publicEncrypt(
-        {
-            key: fs.readFileSync(publicKey, 'utf8'),
-            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-            oaepHash: 'sha256'
-        },
-        // We convert the data string to a buffer using `Buffer.from`
-        Buffer.from(password)
-    )
-}
-
-// TODO : hash the password
 exports.createUser = async (email, password, fullName, emailPassword) => {
     try {
+        const { salt, hash } = await hashWithNewSalt(password)
         return await User.create({
             email: email,
             full_name: fullName,
-            password: password,
+            password: hash,
+            salt: salt,
             email_password: encryptPassword(emailPassword).toString('base64')
         })
     } catch (error) {
@@ -33,10 +19,7 @@ exports.createUser = async (email, password, fullName, emailPassword) => {
 
 exports.findUserByEmail = email => User.findOne({ where: { email: email } })
 
-exports.findUser = userId =>
-    User.findOne({
-        where: { id: userId }
-    })
+exports.findUser = userId => User.findOne({ where: { id: userId } })
 
 exports.changeParam = (id, param, value) => {
     switch (param) {
@@ -49,36 +32,27 @@ exports.changeParam = (id, param, value) => {
         default:
             var updateParam = {}
             updateParam[param] = value
-            return User.update(updateParam, {
-                where: {
-                    id: id
-                }
-            })
+            return User.update(updateParam, { where: { id: id } })
     }
 }
 
-// TODO : hash the password
-exports.changePassword = (id, value) =>
-    User.update(
-        { password: value },
-        {
-            where: {
-                id: id
-            }
-        }
-    )
+exports.changePassword = async (id, value) => {
+    const { salt, hash } = await hashWithNewSalt(value)
+    return User.update({ password: hash, salt: salt }, { where: { id: id } })
+}
 
 exports.changeEmailPassword = (id, value) =>
     User.update(
         { email_password: encryptPassword(value).toString('base64') },
-        {
-            where: {
-                id: id
-            }
-        }
+        { where: { id: id } }
     )
 
-exports.filterUser = user => ({
-    full_name: user.full_name,
-    email: user.email
-})
+exports.filterUser = user => ({ full_name: user.full_name, email: user.email })
+
+/**
+ * check if the provided password is the one hashed in the database
+ * @param {User} user
+ * @param {string} password
+ */
+exports.checkUserPassword = async (user, password) =>
+    user.password === (await sha512(password, user.salt))
