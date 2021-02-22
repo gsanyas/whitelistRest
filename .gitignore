@@ -1,8 +1,8 @@
 node_modules
-private.pem
-private.pem.pub
-public.pub
 /.idea
 .env
 config.json
 keys
+local
+*.pub
+*.pem
