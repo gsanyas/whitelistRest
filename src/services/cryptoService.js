@@ -64,7 +64,6 @@ const hashWithNewSalt = async password => {
  */
 const signToken = value => {
     const privateKey = fs.readFileSync('./private.pem', 'utf8')
-    const value = genRandomString(16)
     const token = jwt.sign({ id: value }, privateKey, { algorithm: 'HS256' })
     return token
 }
