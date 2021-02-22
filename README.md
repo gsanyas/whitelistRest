@@ -47,6 +47,19 @@ DB_DIALECT=mariadb
 
 `npm start`
 
+
+### Exécution avec Docker
+
+Construire le container
+
+`sudo docker build -t project_api .`
+
+Exécuter le container
+
+`sudo docker run -it --init --env-file <Path to .env file> -p 8070:8070 project_api`
+
+
 ### Documentation
 
 Accéder via un navigateur au chemin <URI_API>/docs pour avoir une description de chaque route (il en manque encore certaines)
+
