@@ -10,7 +10,7 @@ exports.QuarantineSwagger = {
                 created_at: { type: 'string' }
             },
             example: {
-                id: 9,
+                id: '6e5gr3zgeg65g65z6',
                 email_sender: 'jack@email.com',
                 email_subject: 'hello',
                 email_size: 150,
