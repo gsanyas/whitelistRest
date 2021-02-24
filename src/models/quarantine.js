@@ -21,15 +21,15 @@ const Quarantine = sequelize.define(
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         client_id: { type: DataTypes.STRING(16), allowNull: true },
-        fk_user: { type: DataTypes.INTEGER },
-        email_sender: { type: DataTypes.STRING(120) },
-        email_subject: { type: DataTypes.STRING(120) },
+        fk_user: { type: DataTypes.INTEGER, allowNull: false },
+        email_sender: { type: DataTypes.STRING(120), allowNull: false },
+        email_subject: { type: DataTypes.STRING(120), allowNull: false },
         email_size: { type: DataTypes.INTEGER },
-        email_id: { type: DataTypes.STRING(120) },
+        email_id: { type: DataTypes.STRING(120), allowNull: false },
         to_eliminate: { type: DataTypes.BOOLEAN, defaultValue: false },
         to_restore: { type: DataTypes.BOOLEAN, defaultValue: false },
         was_restored: { type: DataTypes.BOOLEAN, defaultValue: false },
-        created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+        created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW, allowNull: false }
     },
     { freezeTableName: true, timestamps: false }
 )
