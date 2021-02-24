@@ -7,7 +7,7 @@ const { User } = require('./user')
  * @typedef QuarantineObject
  * @property {number} id - The email id in the database
  * @property {string} client_id - The last id provided to the client (null if this email was never sent to client, unique otherwise)
- * @property {User} fk_user - Use who owns the email
+ * @property {number} fk_user - Use who owns the email
  * @property {string} email_sender - The address of the person who sent the email
  * @property {string} email_subject - The subject of the email
  * @property {number} email_size - The size of the email

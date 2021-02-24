@@ -20,4 +20,18 @@ const findAllListService = (isWhite, user_id) => {
     return List.findAll({ where: { fk_user: user_id } })
 }
 
-module.exports = { createListElementService, findAllListService }
+/**
+ * Find the an address in whitelist or blacklist
+ * @param {boolean} isWhite - true for whitelist search, false for blacklist
+ * @param {string} address - the email address to look for in the list
+ * @param {number} user_id - the user owning the list
+ * @returns {Promise<import('../models/list').ListObject>}
+ */
+const findInListService = (isWhite, address, user_id) => {
+    const List = isWhite ? WhiteList : BlackList
+    return List.findOne({
+        where: { email: address, fk_user: user_id }
+    })
+}
+
+module.exports = { createListElementService, findAllListService, findInListService }

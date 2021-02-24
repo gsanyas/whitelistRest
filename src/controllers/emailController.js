@@ -5,8 +5,9 @@ const {
     restoreEmailService,
     handleSenderEmails
 } = require('../services/quarantineService')
-const { WhiteList, BlackList } = require('../models/list')
 const { internalError } = require('../utils')
+const express = require('express')
+const { findInListService, createListElementService } = require('../services/listServices')
 
 exports.getEmail = async (req, res) => {
     const user = req.user // obtained from cookies
@@ -35,36 +36,41 @@ exports.restoreEmail = async (req, res) => {
 }
 
 /**
- * Send the sender of the selected email to the corresponding list
- * If the sender is already in the list, restore or delete all his mails depending of the list
- * @param {WhiteList or BlackList} list
+ * Curried controller for Sending the sender of the selected email to the corresponding list
+ * - If the sender is already in the list, restore or delete all his mails depending of the list
+ * @param {boolean} isWhite
  */
-exports.putInList = list => async (req, res) => {
-    const email = req.email
-    try {
-        const senderInlist = await list.findOne({
-            where: { email: email.email_sender, fk_user: email.fk_user }
-        })
-        if (senderInlist != null) {
-            // If the sender is already in list the quarantine table must have a problem
-            // We know there is at least one item to change here thanks to the previous checkemail filter
-            const newquarantine = await handleSenderEmails(
-                email.fk_user,
-                email.email_sender,
-                list === BlackList
-            )
-            res.status(200).send(newquarantine[1].map(quarantineFilter))
-        } else {
-            const result = await list.create({
-                email: email.email_sender,
-                fk_user: email.fk_user
-            })
-            await handleSenderEmails(email.fk_user, email.email_sender, list === BlackList)
-            // TODO : add http request to backend
-            res.status(201).send(result.email)
+exports.putInList = isWhite =>
+    /**
+     * @param {express.Request} req
+     * @param {express.Response} res
+     */
+    async (req, res) => {
+        /** @type import('../models/quarantine').QuarantineObject */
+        const email = req.email
+        try {
+            const senderInlist = await findInListService(isWhite, email.email_sender, email.fk_user)
+            if (senderInlist != null) {
+                // If the sender is already in list the quarantine table must have a problem
+                // We know there is at least one item to change here thanks to the previous checkemail filter
+                const newquarantine = await handleSenderEmails(
+                    email.fk_user,
+                    email.email_sender,
+                    !isWhite
+                )
+                res.status(200).send(newquarantine[1].map(quarantineFilter))
+            } else {
+                const result = await createListElementService(
+                    isWhite,
+                    email.email_sender,
+                    email.fk_user
+                )
+                await handleSenderEmails(email.fk_user, email.email_sender, !isWhite)
+                // TODO : add http request to backend
+                res.status(201).send(result.email)
+            }
+        } catch (err) {
+            console.log(JSON.stringify(err))
+            res.status(500).json(internalError)
         }
-    } catch (err) {
-        console.log(JSON.stringify(err))
-        res.status(500).json(internalError)
     }
-}
