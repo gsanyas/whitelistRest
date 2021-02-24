@@ -1,43 +1,63 @@
-const replaceAllRegexSpecial = str => {
-    var mystr = str
-    const regexSpecial = "?[$#+-|'.,!^()]/{}=<>"
-    regexSpecial.split('').forEach(c => {
-        mystr = mystr.replace(new RegExp('\\' + c, 'g'), '\\' + c)
-    })
-    return mystr
-}
+const {
+    isExpression,
+    createExpressionService,
+    findAllExpressionService
+} = require('../services/expressionService')
+const { createListElementService, findAllListService } = require('../services/listServices')
+const express = require('express')
 
-exports.addRegular = (list, regularList) => async (req, res) => {
-    const user = req.user // obtained from filter
-    const expression = req.body.expression
-    if (expression === null) res.status(404).send('Expression required')
-    if (!expression.match(/.*@.*/)) res.sendStatus(422)
-    if (expression.match(/.*\*.*/)) {
-        const regex = replaceAllRegexSpecial(expression).replace(/\*/g, '.*')
-        try {
-            const result = await regularList.create({
-                user_expression: expression,
-                expression: regex,
-                fk_user: user.id
-            })
-            res.status(201).send(result)
-        } catch (error) {
-            res.sendStatus(502)
-        }
-    } else {
-        try {
-            const result = await list.create({ email: expression, fk_user: user.id })
-            res.status(201).send(result)
-        } catch (error) {
-            res.sendStatus(502)
+/**
+ * Curried controller to add a regular expression or an email to the lists
+ * - The request needs to go through the checkToken filter first
+ * @param {boolean} isWhite - if true, the email will be added to the Whitelist and the
+ *      regular expression to the WhiteListRegularExpression, else to the Black version
+ */
+exports.addRegular = isWhite =>
+    /**
+     * @param {express.Request} req
+     * @param {express.Response} res
+     */
+    async (req, res) => {
+        const user = req.user // obtained from filter
+        const expression = req.body.expression
+        if (expression === null) res.status(404).send('Expression required')
+        if (!expression.match(/.*@.*/)) res.sendStatus(422)
+        if (isExpression(expression)) {
+            try {
+                const result = await createExpressionService(isWhite, expression, user.id)
+                // TODO filter expression
+                res.status(201).send(result)
+            } catch (error) {
+                res.sendStatus(502)
+            }
+        } else {
+            // if the expression is here, it means it is simply an email address
+            try {
+                const result = createListElementService(isWhite, expression, user.id)
+                res.status(201).send(result)
+            } catch (error) {
+                res.sendStatus(502)
+            }
         }
     }
-}
 
-exports.getRegular = (list, regularList) => async (req, res) => {
-    const user = req.user
-    const expressions = await regularList.findAll({ where: { fk_user: user.id } })
-    const list_content = await list.findAll({ where: { fk_user: user.id } })
-    const result = expressions.map(e => e.user_expression).concat(list_content.map(e => e.email))
-    res.status(200).send(result)
-}
+/**
+ * Curried controller for obtaining list and regular expression list
+ * - The requests needs to go through the checkToken filter first
+ * @param {boolean} isWhite - if true, obtain white version, else black version
+ */
+exports.getRegular = isWhite =>
+    /**
+     * @param {express.Request} req
+     * @param {express.Response} res
+     */
+    async (req, res) => {
+        const user = req.user
+        const expressions = await findAllExpressionService(isWhite, user.id)
+        const list_content = await findAllListService(isWhite, user.id)
+        // only keep user expressions and emails, and concatenate them into one list of string
+        const result = expressions
+            .map(e => e.user_expression)
+            .concat(list_content.map(e => e.email))
+        res.status(200).send(result)
+    }
