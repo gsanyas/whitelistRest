@@ -1,14 +1,19 @@
 const {
     isExpression,
     createExpressionService,
-    findAllExpressionService
+    findAllExpressionService,
+    deleteExpressionService
 } = require('../services/expressionService')
-const { createListElementService, findAllListService } = require('../services/listServices')
+const {
+    createListElementService,
+    findAllListService,
+    deleteAddressInListService
+} = require('../services/listServices')
 const express = require('express')
 
 /**
  * Curried controller to add a regular expression or an email to the lists
- * - The request needs to go through the checkToken filter first
+ * - The request MUST go through checkToken and checkBody first
  * @param {boolean} isWhite - if true, the email will be added to the Whitelist and the
  *      regular expression to the WhiteListRegularExpression, else to the Black version
  */
@@ -61,3 +66,22 @@ exports.getRegular = isWhite =>
             .concat(list_content.map(e => e.email))
         res.status(200).send(result)
     }
+
+/**
+ * Controller for deleting a regular expression or an email in a list
+ * - if the expression or the email is in both lists, delete both
+ * - Request MUST pass through checkToken and checkBody first
+ * @param {express.Request} req
+ * @param {express.Response} res
+ */
+exports.deleteRegular = async (req, res) => {
+    const user = req.user // obtained from filter
+    /** Type is ensured by checkBody filter @type {string} */
+    const expression = req.body.expression
+    if (isExpression(expression)) {
+        await deleteExpressionService(expression, user.id)
+    } else {
+        await deleteAddressInListService(expression, user.id)
+    }
+    res.status(200).json({ message: 'Expression deleted' })
+}

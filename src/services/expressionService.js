@@ -1,3 +1,4 @@
+const { WhiteList } = require('../models/list')
 const { WhiteListRegularExpression, BlackListRegularExpression } = require('../models/regex')
 
 /**
@@ -43,6 +44,22 @@ const createExpressionService = (isWhite, expression, user_id) => {
 }
 
 /**
+ * Delete the expression in WhiteListRegularExpression and BlackListRegularExpression
+ * @param {string} expression - the user expression to delete
+ * @param {number} user_id - the user owning the lists
+ */
+const deleteExpressionService = async (expression, user_id) => {
+    const wexps = await WhiteListRegularExpression.findAll({
+        where: { user_expression: expression, fk_user: user_id }
+    })
+    wexps.forEach(async exp => await exp.destroy())
+    const bexps = await BlackListRegularExpression.findAll({
+        where: { user_expression: expression, fk_user: user_id }
+    })
+    bexps.forEach(async exp => await exp.destroy())
+}
+
+/**
  * Find all expressions of one user on the whitelist or blacklist
  * @param {boolean} isWhite - if true, then search in whitelist, else in blacklist
  * @param {number} user_id
@@ -55,6 +72,7 @@ const findAllExpressionService = (isWhite, user_id) => {
 
 module.exports = {
     isExpression,
+    deleteExpressionService,
     findAllExpressionService,
     fromUserExpressionToRegex,
     createExpressionService
