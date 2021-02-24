@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { Quarantine } = require('../models/quarantine')
-const { WhiteList } = require('../models/whitelist')
+const { WhiteList } = require('../models/list')
 const axios = require('axios')
 
 exports.verifyEmail = async (req, res) => {

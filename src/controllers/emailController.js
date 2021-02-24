@@ -5,10 +5,8 @@ const {
     restoreEmailService,
     handleSenderEmails
 } = require('../services/quarantineService')
-const { WhiteList } = require('../models/whitelist')
-const { BlackList } = require('../models/blacklist')
+const { WhiteList, BlackList } = require('../models/list')
 const { internalError } = require('../utils')
-const { listFilter } = require('../services/listServices')
 
 exports.getEmail = async (req, res) => {
     const user = req.user // obtained from cookies
@@ -63,7 +61,7 @@ exports.putInList = list => async (req, res) => {
             })
             await handleSenderEmails(email.fk_user, email.email_sender, list === BlackList)
             // TODO : add http request to backend
-            res.status(201).send(listFilter(result))
+            res.status(201).send(result.email)
         }
     } catch (err) {
         console.log(JSON.stringify(err))
