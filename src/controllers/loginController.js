@@ -1,6 +1,6 @@
-const { User } = require('../models/user')
 const fs = require('fs')
-const jwt = require('jsonwebtoken')
+const { internalError } = require('../utils')
+const { checkUserPassword, findUserByEmail, login } = require('../services/userServices')
 
 const cookieConfig = {
     httpOnly: false, // set true in final version, without the proxy
@@ -43,24 +43,27 @@ exports.loginWrongPasswordError = {
 exports.loginSuccessMessage = { setCookie: true }
 
 /**
- * Controller for Login Operations
+ * POST /login
  * See the OpenAPI documentation for more information
  */
 exports.loginController = async (req, res) => {
     const email = req.body.email
     const password = req.body.password
-    const user = await User.findOne({ where: { email: email } })
-    if (!user) {
-        res.status(404).send(this.loginBadUserError)
-    } else {
-        if (password === user['password']) {
-            // TODO: check the password with the hash the password
-            const privateKey = fs.readFileSync('./private.pem', 'utf8')
-            const token = jwt.sign({ id: user['id'] }, privateKey, { algorithm: 'HS256' })
-            res.cookie('authcookie', token, cookieConfig)
-            res.status(200).json(this.loginSuccessMessage)
+    try {
+        const user = await findUserByEmail(email)
+        if (!user) {
+            res.status(404).send(this.loginBadUserError)
         } else {
-            res.status(403).json(this.loginWrongPasswordError)
+            const passwordCorrect = await checkUserPassword(user, password)
+            if (passwordCorrect) {
+                const token = await login(user)
+                res.cookie('authcookie', token, cookieConfig)
+                res.status(200).json(this.loginSuccessMessage)
+            } else {
+                res.status(403).json(this.loginWrongPasswordError)
+            }
         }
+    } catch (err) {
+        res.status(500).json(internalError)
     }
 }

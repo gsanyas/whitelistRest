@@ -8,7 +8,7 @@ const replaceAllRegexSpecial = str => {
 }
 
 exports.addRegular = (list, regularList) => async (req, res) => {
-    const userId = req.user // obtained from filter
+    const user = req.user // obtained from filter
     const expression = req.body.expression
     if (expression === null) res.status(404).send('Expression required')
     if (!expression.match(/.*@.*/)) res.sendStatus(422)
@@ -18,7 +18,7 @@ exports.addRegular = (list, regularList) => async (req, res) => {
             const result = await regularList.create({
                 user_expression: expression,
                 expression: regex,
-                fk_user: userId
+                fk_user: user.id
             })
             res.status(201).send(result)
         } catch (error) {
@@ -26,10 +26,7 @@ exports.addRegular = (list, regularList) => async (req, res) => {
         }
     } else {
         try {
-            const result = await list.create({
-                email: expression,
-                fk_user: userId
-            })
+            const result = await list.create({ email: expression, fk_user: user.id })
             res.status(201).send(result)
         } catch (error) {
             res.sendStatus(502)
@@ -38,17 +35,9 @@ exports.addRegular = (list, regularList) => async (req, res) => {
 }
 
 exports.getRegular = (list, regularList) => async (req, res) => {
-    const userId = req.user
-    const expressions = await regularList.findAll({
-        where: {
-            fk_user: userId
-        }
-    })
-    const list_content = await list.findAll({
-        where: {
-            fk_user: userId
-        }
-    })
+    const user = req.user
+    const expressions = await regularList.findAll({ where: { fk_user: user.id } })
+    const list_content = await list.findAll({ where: { fk_user: user.id } })
     const result = expressions.map(e => e.user_expression).concat(list_content.map(e => e.email))
     res.status(200).send(result)
 }
