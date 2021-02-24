@@ -6,11 +6,11 @@ const History = sequelize.define(
     'history',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        fk_user: { type: DataTypes.INTEGER },
+        fk_user: { type: DataTypes.INTEGER, allowNull: false },
         email_sender: { type: DataTypes.STRING(120), allowNull: false },
         email_subject: { type: DataTypes.STRING(120), allowNull: false },
         reason: { type: DataTypes.STRING(120), allowNull: false },
-        created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+        created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW, allowNull: false }
     },
     { freezeTableName: true, timestamps: false }
 )
