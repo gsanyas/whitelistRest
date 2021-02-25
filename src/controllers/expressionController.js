@@ -13,6 +13,19 @@ const express = require('express')
 const { internalError } = require('../utils')
 
 /**
+ * Prototype sent to the checkBody filter
+ * It is also used by the OpenAPI docs
+ */
+exports.expressionBodyPrototype = {
+    expression: {
+        type: 'string',
+        required: true,
+        description:
+            'The expression that must be added or deleted. It can be a user expression or an email address, the system will add or change it it in the correct place.'
+    }
+}
+
+/**
  * Curried controller to add a regular expression or an email to the lists
  * - The request MUST go through checkToken and checkBody first
  * @param {boolean} isWhite - if true, the email will be added to the Whitelist and the
