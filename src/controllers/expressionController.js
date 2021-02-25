@@ -10,6 +10,7 @@ const {
     deleteAddressInListService
 } = require('../services/listServices')
 const express = require('express')
+const { internalError } = require('../utils')
 
 /**
  * Curried controller to add a regular expression or an email to the lists
@@ -23,32 +24,44 @@ exports.addRegular = isWhite =>
      * @param {express.Response} res
      */
     async (req, res) => {
-        const user = req.user // obtained from filter
+        /**
+         * The user adding the expression
+         * - the request MUST go through checkToken first to obtain it
+         * @type {import('../models/user').UserObject}
+         */
+        const user = req.user
+        /**
+         * The expression to add to the database
+         * - type SHOULD be checked by checkBody filter first
+         * @type {string}
+         */
         const expression = req.body.expression
-        if (expression === null) res.status(404).send('Expression required')
-        if (!expression.match(/.*@.*/)) res.sendStatus(422)
+        // Checks whether the expression matches a valid email or expression
+        // TODO: send a correct error message
+        if (!expression.match(/.*@.*/)) res.sendStatus(404)
         if (isExpression(expression)) {
             try {
                 const result = await createExpressionService(isWhite, expression, user.id)
                 // TODO filter expression
                 res.status(201).send(result)
             } catch (error) {
-                res.sendStatus(502)
+                res.status(500).json(internalError)
             }
         } else {
             // if the expression is here, it means it is simply an email address
             try {
-                const result = createListElementService(isWhite, expression, user.id)
+                const result = await createListElementService(isWhite, expression, user.id)
+                // TODO: filter result
                 res.status(201).send(result)
             } catch (error) {
-                res.sendStatus(502)
+                res.sendStatus(500).json(internalError)
             }
         }
     }
 
 /**
  * Curried controller for obtaining list and regular expression list
- * - The requests needs to go through the checkToken filter first
+ * - The requests MUST go through the checkToken filter first
  * @param {boolean} isWhite - if true, obtain white version, else black version
  */
 exports.getRegular = isWhite =>
@@ -57,6 +70,11 @@ exports.getRegular = isWhite =>
      * @param {express.Response} res
      */
     async (req, res) => {
+        /**
+         * The user whose list is obtained
+         * - the request MUST go through checkToken first to obtain it
+         * @type {import('../models/user').UserObject}
+         */
         const user = req.user
         const expressions = await findAllExpressionService(isWhite, user.id)
         const list_content = await findAllListService(isWhite, user.id)

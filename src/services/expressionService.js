@@ -32,6 +32,7 @@ const fromUserExpressionToRegex = expression =>
  * @param {boolean} isWhite
  * @param {string} expression
  * @param {number} user_id
+ * @returns {Promise<import('../models/regex').ExpressionObject>}
  */
 const createExpressionService = (isWhite, expression, user_id) => {
     const List = isWhite ? WhiteListRegularExpression : BlackListRegularExpression

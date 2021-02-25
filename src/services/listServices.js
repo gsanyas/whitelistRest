@@ -3,6 +3,7 @@ const { WhiteList, BlackList } = require('../models/list')
 /**
  * Create a new element in Whitelist or Blacklist
  * @param {boolean} isWhite
+ * @returns {Promise<import('../models/list').ListObject>}
  */
 const createListElementService = (isWhite, email, user_id) => {
     const List = isWhite ? WhiteList : BlackList
