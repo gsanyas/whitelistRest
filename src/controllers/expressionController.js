@@ -26,6 +26,18 @@ exports.expressionBodyPrototype = {
 }
 
 /**
+ * Body response when an expression is provided which does not contain a valid expression or email
+ * - it is also used in OpenAPI description of the POST /list/whitelist and POST /list/blacklist routes
+ * @param {string} color
+ */
+exports.addExpressionInvalidBody = color => ({
+    type: `/list/${color}list/add-invalid`,
+    title: 'Invalid expression',
+    status: 400,
+    details: 'The provided expression is not an email neither a group of email addresses'
+})
+
+/**
  * Curried controller to add a regular expression or an email to the lists
  * - The request MUST go through checkToken and checkBody first
  * @param {boolean} isWhite - if true, the email will be added to the Whitelist and the
@@ -51,7 +63,8 @@ exports.addRegular = isWhite =>
         const expression = req.body.expression
         // Checks whether the expression matches a valid email or expression
         // TODO: send a correct error message
-        if (!expression.match(/.*@.*/)) res.sendStatus(404)
+        if (!expression.match(/.*@.*/))
+            res.status(400).json(this.addExpressionInvalidBody(isWhite ? 'white' : 'black'))
         if (isExpression(expression)) {
             try {
                 const result = await createExpressionService(isWhite, expression, user.id)
