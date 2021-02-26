@@ -111,6 +111,8 @@ exports.getRegular = isWhite =>
         res.status(200).send(result)
     }
 
+exports.deleteExpressionMessage = { message: 'Expression deleted' }
+
 /**
  * Controller for deleting a regular expression or an email in a list
  * - if the expression or the email is in both lists, delete both
@@ -119,6 +121,11 @@ exports.getRegular = isWhite =>
  * @param {express.Response} res
  */
 exports.deleteRegular = async (req, res) => {
+    /**
+     * The user whose list is obtained
+     * - the request MUST go through checkToken first to obtain it
+     * @type {import('../models/user').UserObject}
+     */
     const user = req.user // obtained from filter
     /** Type is ensured by checkBody filter @type {string} */
     const expression = req.body.expression
@@ -127,5 +134,5 @@ exports.deleteRegular = async (req, res) => {
     } else {
         await deleteAddressInListService(expression, user.id)
     }
-    res.status(200).json({ message: 'Expression deleted' })
+    res.status(200).json(this.deleteExpressionMessage)
 }
