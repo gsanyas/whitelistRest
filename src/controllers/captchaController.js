@@ -6,11 +6,16 @@ const { verifyCaptcha } = require('../services/httpService')
 
 /**
  * Controller checking a captcha
+ * - the request should go through checkBody first
  * @param {express.Request} req
  * @param {express.Response} res
+ * @typedef verifyEmailData
+ * @property {string} email
+ * @property {string} captchaToken
  */
 exports.verifyEmail = async (req, res) => {
     const emailId = req.params.id
+    /** @type {verifyEmailData} */
     const data = req.body
     try {
         const response = await verifyCaptcha(data.captchaToken)
