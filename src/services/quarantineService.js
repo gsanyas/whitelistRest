@@ -48,6 +48,20 @@ const getAllEmailsService = user_id =>
 const deleteEmailService = id => Quarantine.update({ to_eliminate: true }, { where: { id: id } })
 
 /**
+ * Restore the email for which the sender has solved a captcha
+ * @param {string} id - the email id (given to the sender)
+ * @param {string} sender - the email address of the sender
+ */
+const restoreEmailForCaptchaService = async (id, sender) => {
+    /** @type QuarantineObject */
+    const email = await Quarantine.findOne({
+        where: { id: id, email_sender: sender }
+    })
+    if (!email) return undefined
+    return (await restoreEmailService(email.id))[1].pop()
+}
+
+/**
  * Restore the specified email
  * @param {number} id - The email id
  * @returns {Promise<[number, QuarantineObject[]]>}
@@ -81,5 +95,6 @@ module.exports = {
     getAllEmailsService,
     handleSenderEmails,
     quarantineFilter,
+    restoreEmailForCaptchaService,
     restoreEmailService
 }
