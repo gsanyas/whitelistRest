@@ -10,7 +10,7 @@ const cookieConfig = {
 }
 
 /**
- * Prototype sent by the checkBody filter
+ * Prototype sent to the checkBody filter
  * It is also used by the OpenAPI docs
  */
 exports.loginBodyPrototype = {

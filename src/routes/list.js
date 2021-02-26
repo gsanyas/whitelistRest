@@ -1,15 +1,25 @@
 const express = require('express')
 const router = express.Router()
+const {
+    addRegular,
+    getRegular,
+    deleteRegular,
+    expressionBodyPrototype
+} = require('../controllers/expressionController')
+const { checkBody } = require('../filters/checkBody')
 
-const { addRegular, getRegular } = require('../controllers/expressionController')
-const { WhiteList } = require('../models/whitelist')
-const { WhiteListRegularExpression } = require('../models/whitelistRegularExpression')
-const { BlackListRegularExpression } = require('../models/blacklistRegularExpression')
-const { BlackList } = require('../models/blacklist')
-
-router.post('/whitelist', addRegular(WhiteList, WhiteListRegularExpression))
-router.post('/blacklist', addRegular(BlackList, BlackListRegularExpression))
-router.get('/whitelist', getRegular(WhiteList, WhiteListRegularExpression))
-router.get('/blacklist', getRegular(BlackList, BlackListRegularExpression))
+router.post(
+    '/whitelist',
+    checkBody('list/whitelist-body', expressionBodyPrototype),
+    addRegular(true)
+)
+router.post(
+    '/blacklist',
+    checkBody('list/blacklist-body', expressionBodyPrototype),
+    addRegular(false)
+)
+router.get('/whitelist', getRegular(true))
+router.get('/blacklist', getRegular(false))
+router.post('/delete', checkBody('list/delete-body', expressionBodyPrototype), deleteRegular)
 
 module.exports = router
