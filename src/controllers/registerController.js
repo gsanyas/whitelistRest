@@ -29,17 +29,21 @@ exports.registerEmailError = {
 
 // TODO (possible): check the connection with the IMAP server (before the register in another endpoint)
 exports.register = async (req, res) => {
-    const user = await createUser(
-        req.body.email,
-        req.body.password,
-        req.body.full_name,
-        req.body.email_password
-    )
-    if (user) {
-        res.status(201).json(filterUser(user))
-    } else if (await findUserByEmail(req.body.email)) {
-        res.status(400).json(this.registerEmailError)
-    } else {
+    try {
+        const user = await createUser(
+            req.body.email,
+            req.body.password,
+            req.body.full_name,
+            req.body.email_password
+        )
+        if (user) {
+            res.status(201).json(filterUser(user))
+        } else if (await findUserByEmail(req.body.email)) {
+            res.status(400).json(this.registerEmailError)
+        } else {
+            res.status(500).json(internalError)
+        }
+    } catch (error) {
         res.status(500).json(internalError)
     }
 }
