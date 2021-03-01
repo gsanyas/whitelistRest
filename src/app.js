@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express')
 const { router } = require('./routes')
 require('dotenv').config()
+require('../utils')
 const { checkToken } = require('./filters/checktoken')
 const options = require('./swagger')
 

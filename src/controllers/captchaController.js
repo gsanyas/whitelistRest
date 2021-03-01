@@ -5,6 +5,38 @@ const express = require('express')
 const { verifyCaptcha } = require('../services/httpService')
 
 /**
+ * Error returned when the email id is not in database
+ * - used by the captchaController and by OpenAPI
+ * @type {import('../utils').errorMessage}
+ */
+exports.emailNotFoundCaptchaError = {
+    type: '/verify-email',
+    title: 'Email not found',
+    status: 404,
+    detail:
+        'The email id is not in database. The email was probably removed from quarantine by the user.'
+}
+
+/**
+ * Error returned when the captcha is incorrect
+ * - used by the captchaController and by OpenAPI
+ * @type {import('../utils').errorMessage}
+ */
+exports.incorrectCaptchaError = {
+    type: '/verify-captcha',
+    title: 'Incorrect captcha',
+    status: 404,
+    detail: 'The captcha was declared incorrect by Google Recaptcha.'
+}
+
+/**
+ * Message returned when the captcha is validated
+ * - used by verifyController and by OpenAPI
+ * @type {import('../utils').Message}
+ */
+exports.validatedCaptchaMessage = { message: 'Valid captcha' }
+
+/**
  * Controller checking a captcha
  * - the request should go through checkBody first
  * @param {express.Request} req
@@ -21,12 +53,12 @@ exports.verifyEmail = async (req, res) => {
         const response = await verifyCaptcha(data.captchaToken)
         if (response.data.success) {
             const email = await restoreEmailForCaptchaService(emailId, data.email)
-            if (!email) res.status(404).json({ message: 'Email does not exist' })
+            if (!email) res.status(404).json(this.emailNotFoundCaptchaError)
             res.status(500).json(internalError)
             await createListElementService(true, email.email_sender, email.fk_user)
-            res.status(204).send('')
+            res.status(200).json(this.validatedCaptchaMessage)
         } else {
-            res.status(404).send('Incorrect captcha')
+            res.status(404).send(this.incorrectCaptchaError)
         }
     } catch (error) {
         res.status(500).json(internalError)

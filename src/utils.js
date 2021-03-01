@@ -1,5 +1,13 @@
+/**
+ * Prototype for an error message
+ * @typedef errorMessage
+ * @property {string} type - Identifier for the error
+ * @property {string} title - The error name
+ * @property {number} status - The HTTP status code associated
+ * @property {string} detail - More information on the error, and advices on how to solve it.
+ */
 exports.errorPrototype = {
-    type: { type: 'string', description: 'Identifier for th error.' },
+    type: { type: 'string', description: 'Identifier for the error.' },
     title: { type: 'string', description: 'The error name.' },
     status: { type: 'number', description: 'The HTTP status code associated.' },
     detail: {
@@ -32,3 +40,10 @@ const isObjectCorrect = (testedObject, prototype) => {
 exports.isObjectCorrect = isObjectCorrect
 
 exports.internalError = { message: 'Internal error in our server. Sorry for the inconvenience.' }
+
+/**
+ * Prototype for a basic message
+ * @typedef Message
+ * @property {string} message
+ */
+exports.messagePrototype = { message: { type: 'string' } }

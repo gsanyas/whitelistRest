@@ -1,4 +1,4 @@
-const { internalError, errorPrototype } = require('../utils')
+const { internalError, errorPrototype, messagePrototype } = require('../utils')
 
 exports.swaggerJsonContent = (properties, example) => ({
     'application/json': {
@@ -28,7 +28,7 @@ exports.messageComponentSwagger = example => {
         'application/json': {
             schema: {
                 type: 'object',
-                properties: { message: { type: 'string' } },
+                properties: messagePrototype,
                 example: example
             }
         }
