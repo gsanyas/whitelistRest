@@ -63,7 +63,7 @@ const restoreEmailService = id => Quarantine.update({ to_restore: true }, { wher
  */
 const handleSenderEmails = (user_id, sender, mustDelete) =>
     Quarantine.update(
-        { to_restore: mustDelete, to_eliminate: !mustDelete },
+        { to_restore: !mustDelete, to_eliminate: mustDelete },
         {
             where: {
                 fk_user: user_id,
