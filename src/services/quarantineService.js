@@ -25,7 +25,6 @@ const checkEmailService = (user_id, client_id) =>
             client_id: client_id,
             to_eliminate: false,
             to_restore: false,
-            was_eliminated: false,
             was_restored: false
         }
     })
