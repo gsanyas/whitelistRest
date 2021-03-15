@@ -2,7 +2,7 @@ const { internalError } = require('../utils')
 const { restoreEmailForCaptchaService } = require('../services/quarantineService')
 const { createListElementService } = require('../services/listServices')
 const express = require('express')
-const { verifyCaptcha } = require('../services/httpService')
+const { verifyCaptcha, sendRestoreSignal } = require('../services/httpService')
 
 /**
  * Error returned when the email id is not in database
@@ -54,8 +54,8 @@ exports.verifyEmail = async (req, res) => {
         if (response.data.success) {
             const email = await restoreEmailForCaptchaService(emailId, data.email)
             if (!email) res.status(404).json(this.emailNotFoundCaptchaError)
-            res.status(500).json(internalError)
             await createListElementService(true, email.email_sender, email.fk_user)
+            await sendRestoreSignal(email.fk_user)
             res.status(200).json(this.validatedCaptchaMessage)
         } else {
             res.status(404).send(this.incorrectCaptchaError)

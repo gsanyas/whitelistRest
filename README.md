@@ -36,6 +36,7 @@ Par exemple:
 RECAPTCHA_TOKEN=<clé secrète de recaptcha>
 PUBLIC_KEY_PATH=<chemin vers la clé de chiffrement>
 ORIGIN_URI=<URI du frontend, ex: http://localhost:4200>
+BACKEND_URI=<URI du frontend, ex: http://localhost:5000>
 DB_NAME=whitelist
 DB_USERNAME=<nom d'utilisateur avec lequel on accède à la base de données>
 DB_PASSWORD=<mot de passe de cet utilisateur>
@@ -47,7 +48,6 @@ DB_DIALECT=mariadb
 
 `npm start`
 
-
 ### Exécution avec Docker
 
 Construire le container
@@ -58,8 +58,6 @@ Exécuter le container
 
 `sudo docker run -it --init --env-file <Path to .env file> -p 8070:8070 project_api`
 
-
 ### Documentation
 
 Accéder via un navigateur au chemin <URI_API>/docs pour avoir une description de chaque route (il en manque encore certaines)
-
