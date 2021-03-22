@@ -30,7 +30,7 @@ exports.restoreEmail = async (req, res) => {
     const email = req.email
     try {
         const newmail = await restoreEmailService(email.id)
-        res.status(200).send(newmail[1].map(quarantineFilter))
+        res.status(200).send(quarantineFilter(newmail))
     } catch (_err) {
         res.status(500).json(internalError)
     }

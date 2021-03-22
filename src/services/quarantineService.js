@@ -87,25 +87,28 @@ const restoreEmailForCaptchaService = async (id, sender) => {
         where: { id: id, email_sender: sender }
     })
     if (!email) return undefined
-    return (await restoreEmailService(email.id))[1].pop()
+    return restoreEmailService(email.id)
 }
 
 /**
  * Restore the specified email
  * @param {number} id - The email id
- * @returns {Promise<[number, QuarantineObject[]]>}
+ * @returns {Promise<QuarantineObject>}
  */
-const restoreEmailService = id => Quarantine.update({ to_restore: true }, { where: { id: id } })
+const restoreEmailService = async id => {
+    await Quarantine.update({ to_restore: true }, { where: { id: id } })
+    return Quarantine.findOne({ where: { id: id } })
+}
 
 /**
  * Eliminate or restore emails addressed to the user from the specified address
  * @param {number} user_id - The id of the user
  * @param {number} sender - The email address
  * @param {boolean} mustDelete - if true, then the emails will be deleted, else they will be restored
- * @returns {Promise<[number, QuarantineObject[]]>}
+ * @returns {Promise<QuarantineObject>}
  */
-const handleSenderEmails = (user_id, sender, mustDelete) =>
-    Quarantine.update(
+const handleSenderEmails = async (user_id, sender, mustDelete) => {
+    await Quarantine.update(
         { to_restore: !mustDelete, to_eliminate: mustDelete },
         {
             where: {
@@ -117,6 +120,16 @@ const handleSenderEmails = (user_id, sender, mustDelete) =>
             }
         }
     )
+    return Quarantine.findAll({
+        where: {
+            fk_user: user_id,
+            email_sender: sender,
+            to_restore: !mustDelete,
+            to_eliminate: mustDelete,
+            was_restored: false
+        }
+    })
+}
 
 module.exports = {
     checkEmailService,
