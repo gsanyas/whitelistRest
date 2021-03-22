@@ -30,5 +30,8 @@ exports.verifyCaptcha = captchaToken => {
  * @param {number} user_id - The true id of the selected user.
  * @returns {*} 204 HTTP response if all went well, undefined otherwise.
  */
-exports.sendRestoreSignal = user_id =>
-    sendToURL(`${process.env.BACKEND_URI}/user/${user_id}/email/restoration`)
+exports.sendRestoreSignal = user_id => {
+    const url = `${process.env.BACKEND_URI}/user/${user_id}/email/restoration`
+    console.log('Posting to URL: ' + url)
+    return sendToURL(url)
+}
