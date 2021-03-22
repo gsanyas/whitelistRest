@@ -105,7 +105,7 @@ const restoreEmailService = async id => {
  * @param {number} user_id - The id of the user
  * @param {number} sender - The email address
  * @param {boolean} mustDelete - if true, then the emails will be deleted, else they will be restored
- * @returns {Promise<QuarantineObject>}
+ * @returns {Promise<QuarantineObject[]>}
  */
 const handleSenderEmails = async (user_id, sender, mustDelete) => {
     await Quarantine.update(
