@@ -30,6 +30,7 @@ exports.restoreEmail = async (req, res) => {
     const email = req.email
     try {
         const newmail = await restoreEmailService(email.id)
+        await sendRestoreSignal(email.fk_user)
         res.status(200).send(quarantineFilter(newmail))
     } catch (_err) {
         res.status(500).json(internalError)
