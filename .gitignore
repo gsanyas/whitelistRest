@@ -6,3 +6,4 @@ keys
 local
 *.pub
 *.pem
+tests/*.txt
