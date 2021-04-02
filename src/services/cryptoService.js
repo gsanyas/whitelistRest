@@ -77,11 +77,32 @@ const checkToken = token => {
     return jwt.verify(token, private)
 }
 
+/**
+ * @callback conditionFunction
+ * @param {string} value - The id that will be tested in the condition
+ * @returns {Promise<boolean>}
+ */
+
+/**
+ * Find a random id that does not exist
+ * @param {conditionFunction} doIdExist - function returning true when the given id exist
+ * @returns {Promise<string>}
+ */
+const findNonExistingId = async doIdExist => {
+    /** @type {string} */
+    let value // token value
+    do {
+        value = genRandomString(16)
+    } while (await doIdExist(value))
+    return value
+}
+
 module.exports = {
     encryptPassword,
     sha512,
     hashWithNewSalt,
     genRandomString,
     signToken,
-    checkToken
+    checkToken,
+    findNonExistingId
 }

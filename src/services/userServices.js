@@ -4,21 +4,21 @@ const {
     sha512,
     hashWithNewSalt,
     genRandomString,
-    signToken
+    signToken,
+    findNonExistingId
 } = require('./cryptoService')
 const { User } = require('../models/user')
 
 /**
- * Find a token identifier that is not already used in the User table
- * It should statistically never loop
+ * Test function, return true when the value is already used as a token in User table
+ * @param {string} value
  */
-const findNonExistingTokenIdentifier = async () => {
-    let value // token value
-    do {
-        value = genRandomString(16)
-    } while (await User.findOne({ where: { token: value } }))
-    return value
-}
+const doTokenIdExist = async value => (await User.findOne({ where: { token: value } })) !== null
+
+/**
+ * Find a token identifier that is not already used in the User table
+ */
+const findNonExistingTokenIdentifier = () => findNonExistingId(doTokenIdExist)
 
 exports.createUser = async (email, password, fullName, emailPassword) => {
     try {
